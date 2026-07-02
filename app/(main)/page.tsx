@@ -1,6 +1,6 @@
-import Image from "next/image";
-import { ChunkyButton } from "@/src/presentation/components/chunky-button";
 import { AppVersion } from "@/src/presentation/components/app-version";
+import { ChunkyButton } from "@/src/presentation/components/chunky-button";
+import Image from "next/image";
 
 const FEATURES = [
   { emoji: "🔤", label: "จำตัวอักษร", color: "bg-tile-2" },
@@ -29,13 +29,17 @@ export default function HomePage() {
   return (
     <div className="relative mx-auto flex max-w-lg flex-col items-center overflow-hidden px-6 pt-8 text-center">
       {DECOR.map((d, i) => (
-        <span key={i} aria-hidden className={`pointer-events-none absolute select-none ${d.cls}`}>
+        <span
+          key={i}
+          aria-hidden
+          className={`pointer-events-none absolute select-none ${d.cls}`}
+        >
           {d.emoji}
         </span>
       ))}
 
       <Image
-        src="/easy-abc/logo.png"
+        src="/easy-abc/logo-transparent.png"
         alt="Easy ABC — แพนด้ากับกระต่ายชูมือทักทายบนโลโก้"
         width={300}
         height={300}
@@ -47,8 +51,8 @@ export default function HomePage() {
         เกมสะกดคำสำหรับเด็ก
       </h1>
       <p className="mt-3 rounded-full bg-tile-5 px-5 py-2 text-lg font-bold text-white shadow-md">
-        เรียนรู้ผ่านการเล่น — <span className="text-accent-400">สนุก</span> ปลดด่าน{" "}
-        <span className="text-accent-400">เก็บดาว!</span>
+        เรียนรู้ผ่านการเล่น — <span className="text-accent-400">สนุก</span>{" "}
+        ปลดด่าน <span className="text-accent-400">เก็บดาว!</span>
       </p>
 
       <ChunkyButton href="/modes" variant="sunny" size="lg" className="mt-8">
@@ -74,8 +78,8 @@ export default function HomePage() {
           🎁 Easy ABC Premium
         </h2>
         <p className="mt-1 text-sm text-muted">
-          ปลดล็อกโหมดจับเวลา ฟังแล้วสะกด เล่นไม่จำกัด ทายคำจากรูป
-          + ธีมพิเศษ + Energy ไม่จำกัด
+          ปลดล็อกโหมดจับเวลา ฟังแล้วสะกด เล่นไม่จำกัด ทายคำจากรูป + ธีมพิเศษ +
+          Energy ไม่จำกัด
         </p>
         <ChunkyButton href="/shop" variant="primary" size="sm" className="mt-3">
           ดูในร้านค้า →
