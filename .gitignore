@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# claude — ค่าเฉพาะเครื่อง (settings.json หลัก commit เข้า repo)
+.claude/settings.local.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
