@@ -18,18 +18,56 @@ const mali = Mali({
   weight: ["400", "500", "600", "700"],
 });
 
+// Base URL ใช้แปลง opengraph-image/twitter-image (file-based) เป็น absolute URL
+// (crawler อย่าง Facebook/LINE ต้องการ URL เต็ม) — ตั้ง APP_URL บน production ได้
+const siteUrl = process.env.APP_URL ?? "https://easy-abc.easy-ai.online";
+
+const title = "Easy ABC — เกมสะกดคำสำหรับเด็ก";
+const description =
+  "เรียนรู้ภาษาอังกฤษผ่านการเล่น สนุก ปลดด่าน เก็บดาว! เกมสะกดคำภาษาอังกฤษสำหรับเด็ก เล่นฟรีบนเว็บ ไม่ต้องดาวน์โหลด เล่นได้ทุกอุปกรณ์";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://easy-abc.easy-ai.online"),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "Easy ABC — เกมสะกดคำสำหรับเด็ก",
+    default: title,
     template: "%s | Easy ABC",
   },
-  description:
-    "เรียนรู้ภาษาอังกฤษผ่านการเล่น สนุก ปลดด่าน เก็บดาว! เกมสะกดคำภาษาอังกฤษสำหรับเด็ก เล่นฟรีบนเว็บ ไม่ต้องดาวน์โหลด เล่นได้ทุกอุปกรณ์",
+  description,
+  applicationName: "Easy ABC",
+  manifest: "/favicon/site.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Easy ABC",
+  },
+  // favicon.ico / icon.png / apple-icon.png ใน app/ ถูกใส่ให้อัตโนมัติ (file-based)
+  // เพิ่มขนาดจากชุดที่เตรียมไว้ใน public/favicon/ ให้ครบ
+  icons: {
+    icon: [
+      { url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      {
+        url: "/favicon/android-chrome-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+    ],
+    apple: [{ url: "/favicon/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  // og:image / twitter:image มาจาก app/opengraph-image.png และ
+  // app/twitter-image.png อัตโนมัติ (file-based metadata)
   openGraph: {
-    title: "Easy ABC — เกมสะกดคำสำหรับเด็ก",
-    description: "เรียนรู้ผ่านการเล่น — สนุก ปลดด่าน เก็บดาว!",
-    images: ["/easy-abc/open-graph.png"],
+    type: "website",
+    siteName: "Easy ABC",
+    locale: "th_TH",
+    url: siteUrl,
+    title,
+    description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
   },
 };
 
