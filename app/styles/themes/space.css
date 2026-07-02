@@ -1,0 +1,102 @@
+/* ============================================
+   Theme: space — ผจญภัยอวกาศม่วง (ปลดล็อกด้วย Bundle)
+   ============================================ */
+
+[data-theme="space"] {
+  --background: #ece3ff;
+  --foreground: #2e1b57;
+  --card: #ffffff;
+  --card-foreground: #2e1b57;
+  --muted: #6d5a99;
+  --muted-surface: #f1eafe;
+  --border: #ffffff;
+  --ring: #8a4fd6;
+
+  --brand-50: #f1eafe;
+  --brand-100: #e4d6fc;
+  --brand-200: #c9adf8;
+  --brand-300: #ae85f0;
+  --brand-400: #9c6ae4;
+  --brand-500: #8a4fd6;
+  --brand-600: #6f3bb4;
+  --brand-700: #562c8d;
+  --brand-800: #3d1f65;
+  --brand-900: #26133f;
+
+  --on-brand: #ffffff;
+
+  --accent-100: #d9f5ff;
+  --accent-400: #4dc5f0;
+  --accent-500: #17aee6;
+  --accent-600: #0d8ec0;
+
+  --success: #2e9e44;
+  --success-surface: #e3f7e7;
+  --warning: #b57a00;
+  --warning-surface: #fff3cc;
+  --error: #d62839;
+  --error-surface: #fde3e6;
+
+  --font-body: var(--font-mali), "Comic Sans MS", cursive, sans-serif;
+  --font-heading-family: var(--font-baloo), var(--font-mali), cursive,
+    sans-serif;
+
+  /* Game tokens */
+  --bg-top: #b79bf0;
+  --bg-bottom: #ece3ff;
+  --tile-1: #e8384f;
+  --tile-2: #1f6fe0;
+  --tile-3: #7dc832;
+  --tile-4: #f0509b;
+  --tile-5: #8a4fd6;
+  --star: #ffc72c;
+  --locked: #a49ac0;
+  --energy: #9c6ae4;
+}
+
+/* Dark: พลิก ramp — ธีมอวกาศกลางคืนของจริง */
+[data-theme="space"].dark {
+  --background: #120b26;
+  --foreground: #efe8ff;
+  --card: #1d1338;
+  --card-foreground: #efe8ff;
+  --muted: #b3a3d6;
+  --muted-surface: #281a4a;
+  --border: #3c2a66;
+  --ring: #ae85f0;
+
+  --brand-50: #1d1338;
+  --brand-100: #281a4a;
+  --brand-200: #35225f;
+  --brand-300: #452c7c;
+  --brand-400: #6e4bb4;
+  --brand-500: #ae85f0;
+  --brand-600: #c3a3f5;
+  --brand-700: #d7c2f9;
+  --brand-800: #e9ddfc;
+  --brand-900: #f5effe;
+
+  /* brand-500 กลายเป็นสีอ่อน → on-brand ต้องเข้ม */
+  --on-brand: #120b26;
+
+  --accent-100: #0d2b3a;
+  --accent-400: #3db4e2;
+  --accent-500: #66c8ec;
+  --accent-600: #93d9f2;
+
+  --success-surface: #103522;
+  --warning-surface: #3a2f10;
+  --error-surface: #401520;
+
+  /* Game tokens */
+  --bg-top: #120b26;
+  --bg-bottom: #251545;
+  --tile-1: #f0566b;
+  --tile-2: #4c92ee;
+  --tile-3: #8fd44a;
+  --tile-4: #f46cac;
+  --tile-5: #a16be6;
+  --star: #ffd24d;
+  --locked: #675d84;
+  --energy: #b48af5;
+}

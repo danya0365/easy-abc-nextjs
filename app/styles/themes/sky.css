@@ -1,0 +1,105 @@
+/* ============================================
+   Theme: sky (default) — ถอดลุคจาก public/easy-abc/social-promote.png
+   ฟ้า royal blue + ท้องฟ้า gradient + ดาวทอง + tile สีสลับ
+   ผูกกับ :root ด้วย (ธีม default) ตาม skill
+   ============================================ */
+
+:root,
+[data-theme="sky"] {
+  --background: #bfe9ff;
+  --foreground: #123a66;
+  --card: #ffffff;
+  --card-foreground: #123a66;
+  --muted: #4a6f99;
+  --muted-surface: #e3f2fd;
+  --border: #ffffff;
+  --ring: #1f6fe0;
+
+  --brand-50: #ebf3fe;
+  --brand-100: #d7e7fd;
+  --brand-200: #aecffb;
+  --brand-300: #7fb3f7;
+  --brand-400: #4c92ee;
+  --brand-500: #1f6fe0;
+  --brand-600: #1559bc;
+  --brand-700: #0f4494;
+  --brand-800: #0b326e;
+  --brand-900: #07224c;
+
+  --on-brand: #ffffff;
+
+  --accent-100: #fff3cc;
+  --accent-400: #ffd24d;
+  --accent-500: #ffc72c;
+  --accent-600: #d99e00;
+
+  --success: #2e9e44;
+  --success-surface: #e3f7e7;
+  --warning: #b57a00;
+  --warning-surface: #fff3cc;
+  --error: #d62839;
+  --error-surface: #fde3e6;
+
+  --font-body: var(--font-mali), "Comic Sans MS", cursive, sans-serif;
+  --font-heading-family: var(--font-baloo), var(--font-mali), cursive,
+    sans-serif;
+
+  /* Game tokens */
+  --bg-top: #5cc6f5;
+  --bg-bottom: #bfe9ff;
+  --tile-1: #e8384f;
+  --tile-2: #1f6fe0;
+  --tile-3: #7dc832;
+  --tile-4: #f0509b;
+  --tile-5: #8a4fd6;
+  --star: #ffc72c;
+  --locked: #9aa7b8;
+  --energy: #ffb020;
+}
+
+/* Dark: พลิก ramp — 50–300 เป็นพื้น/ขอบเข้ม, 500–900 เป็นสีอ่อน */
+[data-theme="sky"].dark {
+  --background: #0b1e33;
+  --foreground: #e8f4ff;
+  --card: #12293f;
+  --card-foreground: #e8f4ff;
+  --muted: #9fbad1;
+  --muted-surface: #1a3550;
+  --border: #274763;
+  --ring: #6fb1f5;
+
+  --brand-50: #0e2a47;
+  --brand-100: #12365c;
+  --brand-200: #1a4675;
+  --brand-300: #235a93;
+  --brand-400: #3f7fc4;
+  --brand-500: #6fb1f5;
+  --brand-600: #8fc4f8;
+  --brand-700: #b4d8fb;
+  --brand-800: #d6eafd;
+  --brand-900: #eaf4fe;
+
+  /* brand-500 กลายเป็นสีอ่อน → ต้อง set on-brand เป็นสีเข้ม */
+  --on-brand: #0b1e33;
+
+  --accent-100: #3a2f10;
+  --accent-400: #e0ad25;
+  --accent-500: #ffc72c;
+  --accent-600: #ffd961;
+
+  --success-surface: #103522;
+  --warning-surface: #3a2f10;
+  --error-surface: #401520;
+
+  /* Game tokens */
+  --bg-top: #0b1e33;
+  --bg-bottom: #123252;
+  --tile-1: #f0566b;
+  --tile-2: #4c92ee;
+  --tile-3: #8fd44a;
+  --tile-4: #f46cac;
+  --tile-5: #a16be6;
+  --star: #ffd24d;
+  --locked: #5c6b7d;
+  --energy: #ffc24d;
+}

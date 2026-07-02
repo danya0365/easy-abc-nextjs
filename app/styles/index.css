@@ -1,0 +1,47 @@
+/* ============================================
+   Easy ABC — CSS entry point (nextjs-semantic-theme skill)
+   ลำดับ @import ห้ามสลับ: tailwind → theme map → palettes
+   ============================================ */
+
+@import "tailwindcss";
+
+/* Tailwind theme mapping (var() only — no hardcoded colors here) */
+@import "./theme.css";
+
+/* Template palettes. `sky` is the default (also bound to :root). */
+@import "./themes/sky.css";
+@import "./themes/candy.css";
+@import "./themes/space.css";
+
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body);
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading-family);
+  }
+}
+
+@layer utilities {
+  /* พื้นหลังท้องฟ้า gradient ตามภาพโปรโมต (สลับตามธีม/dark อัตโนมัติผ่าน token) */
+  .bg-sky-scene {
+    background-image: linear-gradient(
+      to bottom,
+      var(--bg-top),
+      var(--bg-bottom)
+    );
+  }
+  /* ตัวหนังสือหนาขอบขาวสไตล์การ์ตูนตามภาพโปรโมต */
+  .text-outline {
+    text-shadow:
+      -2px -2px 0 var(--card),
+      2px -2px 0 var(--card),
+      -2px 2px 0 var(--card),
+      2px 2px 0 var(--card),
+      0 4px 8px rgb(0 0 0 / 0.15);
+  }
+}

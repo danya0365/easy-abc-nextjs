@@ -1,0 +1,102 @@
+/* ============================================
+   Theme: candy — โลกลูกกวาดชมพูหวาน (ปลดล็อกด้วย Bundle)
+   ============================================ */
+
+[data-theme="candy"] {
+  --background: #ffe3f1;
+  --foreground: #6b1d44;
+  --card: #ffffff;
+  --card-foreground: #6b1d44;
+  --muted: #a35a7e;
+  --muted-surface: #fdeaf4;
+  --border: #ffffff;
+  --ring: #f0509b;
+
+  --brand-50: #fdeaf4;
+  --brand-100: #fbd5e9;
+  --brand-200: #f8abd3;
+  --brand-300: #f582bd;
+  --brand-400: #f269ac;
+  --brand-500: #f0509b;
+  --brand-600: #d02f7c;
+  --brand-700: #a3215f;
+  --brand-800: #771744;
+  --brand-900: #4b0e2b;
+
+  --on-brand: #ffffff;
+
+  --accent-100: #f1e3ff;
+  --accent-400: #b57de6;
+  --accent-500: #8a4fd6;
+  --accent-600: #6f3bb4;
+
+  --success: #2e9e44;
+  --success-surface: #e3f7e7;
+  --warning: #b57a00;
+  --warning-surface: #fff3cc;
+  --error: #d62839;
+  --error-surface: #fde3e6;
+
+  --font-body: var(--font-mali), "Comic Sans MS", cursive, sans-serif;
+  --font-heading-family: var(--font-baloo), var(--font-mali), cursive,
+    sans-serif;
+
+  /* Game tokens */
+  --bg-top: #ff9ecd;
+  --bg-bottom: #ffe3f1;
+  --tile-1: #e8384f;
+  --tile-2: #8a4fd6;
+  --tile-3: #7dc832;
+  --tile-4: #f0509b;
+  --tile-5: #1f6fe0;
+  --star: #ffc72c;
+  --locked: #c39aae;
+  --energy: #ff8fb8;
+}
+
+/* Dark: พลิก ramp */
+[data-theme="candy"].dark {
+  --background: #2b0e1d;
+  --foreground: #ffe3f1;
+  --card: #3a1428;
+  --card-foreground: #ffe3f1;
+  --muted: #d3a0ba;
+  --muted-surface: #4b1a33;
+  --border: #613048;
+  --ring: #f582bd;
+
+  --brand-50: #3a1428;
+  --brand-100: #4b1a33;
+  --brand-200: #611f42;
+  --brand-300: #7c2854;
+  --brand-400: #b04478;
+  --brand-500: #f582bd;
+  --brand-600: #f8a3ce;
+  --brand-700: #fbc4df;
+  --brand-800: #fddcec;
+  --brand-900: #feeef6;
+
+  /* brand-500 กลายเป็นสีอ่อน → on-brand ต้องเข้ม */
+  --on-brand: #2b0e1d;
+
+  --accent-100: #2c1a45;
+  --accent-400: #a370e0;
+  --accent-500: #b78ae8;
+  --accent-600: #cca9ef;
+
+  --success-surface: #103522;
+  --warning-surface: #3a2f10;
+  --error-surface: #401520;
+
+  /* Game tokens */
+  --bg-top: #2b0e1d;
+  --bg-bottom: #45162e;
+  --tile-1: #f0566b;
+  --tile-2: #a16be6;
+  --tile-3: #8fd44a;
+  --tile-4: #f46cac;
+  --tile-5: #4c92ee;
+  --star: #ffd24d;
+  --locked: #7d5c6c;
+  --energy: #ff9ec4;
+}
