@@ -3,7 +3,7 @@
 import type { Product } from "@/src/domain/ports/product.port";
 
 /** ⚠️ PLACEHOLDER — เปลี่ยนเป็นเบอร์ PromptPay จริงก่อนขึ้น production */
-export const PROMPTPAY_ID = "0812345678";
+export const PROMPTPAY_ID = "1960500086397";
 
 export const PRODUCTS_MASTER: Product[] = [
   {
