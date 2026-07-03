@@ -4,6 +4,8 @@ import {
   ThemeProvider,
   ThemeScript,
 } from "@/src/presentation/providers/theme-provider";
+import { SyncGate } from "@/src/presentation/components/sync-gate";
+import { RejectionNotice } from "@/src/presentation/components/rejection-notice";
 import "./styles/index.css";
 
 const baloo = Baloo_2({
@@ -91,6 +93,8 @@ export default function RootLayout({
       </head>
       <body className="min-h-dvh flex flex-col bg-sky-scene">
         <ThemeProvider>{children}</ThemeProvider>
+        <SyncGate />
+        <RejectionNotice />
       </body>
     </html>
   );

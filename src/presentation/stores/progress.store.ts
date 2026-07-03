@@ -1,10 +1,12 @@
-// ความคืบหน้าโหมดผจญภัย (ดาวต่อด่าน แยก track ต่อเกม) — persist ลง localStorage
+// ความคืบหน้าโหมดผจญภัย (ดาวต่อด่าน แยก track ต่อเกม) — persist ลง localStorage + cloud save
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Stars, StarsByLevel } from "@/src/domain/services/rules";
 import type { AdventureGame } from "@/src/domain/services/mask";
+import type { StarsByGame } from "@/src/domain/ports/game-state.port";
+import { mergeProgress } from "@/src/domain/services/sync";
 
-export type StarsByGame = Record<AdventureGame, StarsByLevel>;
+export type { StarsByGame };
 
 const emptyStars = (): StarsByGame => ({
   spell: {},
@@ -17,6 +19,8 @@ interface ProgressState {
   starsByGame: StarsByGame;
   /** บันทึกแบบ best-of (ไม่ลดดาวที่เคยได้) — คืน true ถ้าเป็นสถิติใหม่ */
   saveStars: (game: AdventureGame, level: number, earned: Stars) => boolean;
+  /** merge ดาวจาก server (best-of) — ตอน login/กู้คืน */
+  mergeFromServer: (server: StarsByGame | null) => void;
   resetProgress: () => void;
 }
 
@@ -35,6 +39,10 @@ export const useProgressStore = create<ProgressState>()(
         }));
         return true;
       },
+      mergeFromServer: (server) =>
+        set((s) => ({
+          starsByGame: mergeProgress(s.starsByGame, server ?? emptyStars()),
+        })),
       resetProgress: () => set({ starsByGame: emptyStars() }),
     }),
     {

@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [0.2.0] - 2026-07-03
+
+### Added
+
+- **ระบบล็อกอิน + กู้คืนการซื้อ + cloud save** (backend ตัวแรก): เข้าสู่ระบบด้วย Google (better-auth) เก็บ user/การซื้อ/ดาว ลง Turso (libSQL) ผ่าน Drizzle — เปลี่ยนเครื่องแล้วการซื้อ/ดาวตามไปด้วย
+- **หน้าผู้ดูแล (admin)** + Dashboard สรุปรายได้: จัดการคำสั่งซื้อ (เพิกถอน/คืนสิทธิ์), สรุปยอดรวม/ตามสินค้า/ล่าสุด — ใช้ app shell/ธีมเดียวกับเกม, guard ด้วย role (non-admin → 404) · seed admin ที่ login ได้ทันที (`npm run db:seed`)
+- แจ้งเตือนเมื่อถูกเพิกถอนการซื้อ: modal เด้งครั้งเดียว (บอกเหตุผลจากผู้ดูแล + ปุ่มชำระอีกครั้ง) ค้างจนกด"รับทราบ" — บันทึกลง persist ไม่เด้งซ้ำ
+- ระบบ migration ฐานข้อมูล (drizzle-kit `generate`/`migrate`) + script `db:make-admin` / `db:seed` (admin ที่ login ได้ทันที)
 - โหมดผจญภัย "เติมตัวอักษรที่หายไป" 3 เกม (ฟรี): เติมข้างหน้า `_AT` / เติมข้างหลัง `CA_` / เติมตรงกลาง `H__E` — แต่ละเกมมีแผนที่ด่าน 1–5 + ดาวแยก track ใช้ระบบ Energy เดิม
 
 - เกมสะกดคำ Easy ABC เวอร์ชันแรก: โหมดผจญภัย 5 ด่าน + ระบบดาว
@@ -19,5 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - หน้าตั้งค่า, วิธีเล่น, TabBar 4 แท็บ
 
 ### Changed
+
+- **IAP: ต้อง login ก่อนซื้อ + auto-approve ทันที + admin เพิกถอนได้**: กด "ชำระเงินแล้ว" (ต้อง login) ปลดล็อกทันทีไม่ต้องรอ · ถ้าตรวจเจอแจ้งชำระเท็จ admin กด "ปิดพรีเมียม" เพิกถอนสิทธิ์ผู้ใช้คนนั้นได้ (server เป็นเจ้าของความจริง — เพิกถอนแล้ว sync ลง client ปลดล็อกจริง)
 
 ### Fixed

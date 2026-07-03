@@ -10,6 +10,7 @@ import { useMounted } from "@/src/presentation/lib/use-mounted";
 import { ThemeSwitcher } from "./theme-switcher";
 import { ChunkyButton } from "./chunky-button";
 import { AppVersion } from "./app-version";
+import { AuthPanel } from "./auth-panel";
 
 function Section({
   title,
@@ -73,6 +74,10 @@ export function SettingsPanel() {
 
   return (
     <div className="flex flex-col gap-4">
+      <Section title="👤 บัญชี">
+        <AuthPanel />
+      </Section>
+
       <Section title="🔊 เสียง">
         <div className="flex flex-col gap-2">
           <ToggleRow
@@ -112,8 +117,14 @@ export function SettingsPanel() {
                 </span>
                 <span className="text-muted">
                   {o.amountThb}฿ ·{" "}
-                  {new Date(o.approvedAt).toLocaleDateString("th-TH")} ·{" "}
-                  <span className="text-success">อนุมัติแล้ว</span>
+                  {new Date(o.createdAt).toLocaleDateString("th-TH")} ·{" "}
+                  {o.status === "approved" ? (
+                    <span className="text-success">อนุมัติแล้ว</span>
+                  ) : o.status === "pending" ? (
+                    <span className="text-warning">รออนุมัติ</span>
+                  ) : (
+                    <span className="text-error">ถูกปฏิเสธ</span>
+                  )}
                 </span>
               </li>
             ))}

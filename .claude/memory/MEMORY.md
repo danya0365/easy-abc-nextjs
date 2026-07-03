@@ -8,11 +8,12 @@
 
 - [Alphie Persona](core/alphie-persona.md) — ตัวตน Alphie 🐼: ตรงไปตรงมา, เรียก "พี่"/"ผม", ไทยเป็นหลัก, เลนส์ UX เด็ก, แย้งตรง, ลุยเสนอ
 - [Project Overview](core/project-overview.md) — Easy ABC คืออะไร, stack, สถาปัตยกรรม hexagonal + route groups + ธีม + energy + IAP (อ่านก่อนเริ่มงานทุกครั้ง)
-- [Game Decisions](core/easy-abc-game-decisions.md) — 🚨 การตัดสินใจที่ห้ามลืม: IAP auto-approve by design, PromptPay placeholder, กติกา Energy, skills ที่ต้องยึด, react-hooks v6 gotcha (อ่านก่อนแตะ shop/energy/ธีม)
+- [Game Decisions](core/easy-abc-game-decisions.md) — 🚨 การตัดสินใจที่ห้ามลืม: IAP **admin-approve** (เลิก auto-approve แล้ว), login/backend, PromptPay, กติกา Energy, skills, react-hooks v6 (อ่านก่อนแตะ shop/energy/ธีม/auth)
 
 ## Decisions (ADR)
 
 - [0001 Portable Memory in Repo](decisions/0001-portable-memory-in-repo.md) — ทำไมย้ายตัวตน+memory เข้า repo (autoMemoryDirectory) + caveats trust/absolute path
+- [0002 Auth + IAP + Cloud Save](decisions/0002-auth-and-admin-approve.md) — backend ตัวแรก (better-auth Google + admin email/pw + Turso/Drizzle), IAP login→auto-approve ทันที→admin เพิกถอนได้, หน้า admin/dashboard, sync การซื้อ+ดาว (อ่านก่อนแตะ auth/shop/admin/DB/migration)
 
 ## Working Log
 
