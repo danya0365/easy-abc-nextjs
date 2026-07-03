@@ -13,6 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.0.0] - 2026-07-03
+
+รุ่น production แรก 🎉 — รวมระบบ login (Google + admin email/password), IAP auto-approve + admin เพิกถอน, cloud save (การซื้อ + ดาว), หน้า admin + dashboard รายได้ (จาก 0.2.0) พร้อมใช้งานจริง
+
+### Fixed
+
+- theme store: เพิ่ม `migrate` กัน rehydrate error เมื่อมี state ธีมเวอร์ชันเก่าค้างใน localStorage (normalize `template`/`dark` ให้ค่าถูกเสมอ)
+
 ## [0.2.0] - 2026-07-03
 
 ### Added

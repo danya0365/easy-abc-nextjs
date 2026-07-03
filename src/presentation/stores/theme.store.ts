@@ -34,6 +34,19 @@ export const useThemeStore = create<ThemeState>()(
       toggleDark: () => set((s) => ({ dark: !s.dark })),
       setDark: (dark) => set({ dark }),
     }),
-    { name: "theme-storage", version: 1 }
+    {
+      name: "theme-storage",
+      version: 1,
+      // รองรับ state เก่า (v0/ไม่มี version) — normalize ให้ค่าถูกเสมอ กัน rehydrate error
+      migrate: (persisted) => {
+        const p = (persisted ?? {}) as Partial<ThemeState>;
+        return {
+          template: THEME_TEMPLATES.includes(p.template as ThemeTemplate)
+            ? (p.template as ThemeTemplate)
+            : DEFAULT_TEMPLATE,
+          dark: !!p.dark,
+        } as ThemeState;
+      },
+    }
   )
 );
