@@ -45,6 +45,13 @@ export default function HowToPlayPage() {
       </div>
       <div className="mt-6 rounded-4xl border-4 border-border bg-card/80 p-5 text-left text-sm text-muted backdrop-blur">
         <p>
+          🐣 <strong className="text-card-foreground">โหมดเติมตัวอักษร:</strong>{" "}
+          นอกจากสะกดทั้งคำ ยังมีเกมเติมตัวที่หายไป — เติมข้างหน้า (
+          <span className="font-heading font-bold">_AT</span>), เติมข้างหลัง (
+          <span className="font-heading font-bold">CA_</span>) และเติมตรงกลาง (
+          <span className="font-heading font-bold">H__E</span>) แต่ละเกมมีด่านและดาวของตัวเอง
+        </p>
+        <p className="mt-2">
           ⚡ <strong className="text-card-foreground">Energy:</strong> เริ่มด่านใหม่ใช้ 1 แท่ง
           (เล่นซ้ำด่านที่ผ่านแล้วฟรี!) เต็มเองทุก 5 นาที และเต็มหลอดฟรีทุกวันแรกที่เข้าเล่น
         </p>

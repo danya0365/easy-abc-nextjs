@@ -8,26 +8,36 @@ import {
   isLevelCompleted,
   isLevelUnlocked,
 } from "@/src/domain/services/rules";
+import type { AdventureGame } from "@/src/domain/services/mask";
 import { useProgressStore } from "@/src/presentation/stores/progress.store";
 import { useEnergyStore } from "@/src/presentation/stores/energy.store";
 import { useEntitlementStore } from "@/src/presentation/stores/entitlement.store";
 import { useMounted } from "@/src/presentation/lib/use-mounted";
+import { getAdventure } from "@/src/presentation/lib/adventures";
 import { LevelButton } from "./level-button";
 import { EnergyEmptyModal } from "./energy-hud";
 
-/** แผนที่ด่านซิกแซกจากล่างขึ้นบน (สไตล์ candy-crush ตามภาพโปรโมต) */
-export function LevelMap({ levels }: { levels: LevelConfig[] }) {
+/** แผนที่ด่านซิกแซกจากล่างขึ้นบน (สไตล์ candy-crush ตามภาพโปรโมต) — ใช้ร่วมทุกเกมผจญภัย */
+export function LevelMap({
+  levels,
+  game = "spell",
+}: {
+  levels: LevelConfig[];
+  game?: AdventureGame;
+}) {
   const router = useRouter();
   const mounted = useMounted();
-  const stars = useProgressStore((s) => s.stars);
+  const starsByGame = useProgressStore((s) => s.starsByGame);
   const spend = useEnergyStore((s) => s.spend);
   const unlimited = useEntitlementStore((s) => s.hasUnlimitedEnergy());
   const [emptyOpen, setEmptyOpen] = useState(false);
 
+  const adventure = getAdventure(game);
+  const stars = starsByGame[game];
   const ALIGN = ["self-start", "self-center", "self-end", "self-center"];
 
   const handlePlay = (level: number) => {
-    // หัก energy ตอนกดเริ่ม (เล่นซ้ำด่านที่ผ่านแล้วฟรี)
+    // หัก energy ตอนกดเริ่ม (เล่นซ้ำด่านที่ผ่านแล้วของเกมนี้ = ฟรี)
     const cost = energyCostToStart({
       kind: "adventure",
       level,
@@ -38,7 +48,7 @@ export function LevelMap({ levels }: { levels: LevelConfig[] }) {
       setEmptyOpen(true);
       return;
     }
-    router.push(`/play/${level}`);
+    router.push(adventure.playRoute(level));
   };
 
   return (

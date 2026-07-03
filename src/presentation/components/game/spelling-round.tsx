@@ -23,6 +23,7 @@ const TILE_COLORS = [
 export function SpellingRound({
   entry,
   decoys,
+  mask,
   showImage = true,
   listenMode = false,
   paused = false,
@@ -31,6 +32,8 @@ export function SpellingRound({
 }: {
   entry: WordEntry;
   decoys: number;
+  /** ตำแหน่งที่ซ่อน (true = ผู้เล่นต้องเติม) — ไม่ส่ง = ซ่อนทุกตัว (โหมดสะกดเต็มคำ) */
+  mask?: boolean[];
   /** false = โหมดฟังแล้วสะกด (ซ่อนรูป) */
   showImage?: boolean;
   /** แสดงปุ่มฟังเสียงคำซ้ำ */
@@ -45,11 +48,19 @@ export function SpellingRound({
   const [slots, setSlots] = useState<(string | null)[]>([]);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
+  const letters = entry.word.split("");
+  const hidden = mask ?? new Array(letters.length).fill(true);
+
   // สร้างถาดใหม่เมื่อเปลี่ยนคำ — สุ่มหลัง hydrate เสมอ (setTimeout กัน hydration mismatch
   // และกัน setState ตรง ๆ ใน effect body)
   useEffect(() => {
     const setup = setTimeout(() => {
-      setTray(buildTray(entry.word, decoys));
+      const all = entry.word.split("");
+      const hiddenLetters = all.filter(
+        (_, i) => (mask ?? all.map(() => true))[i]
+      );
+      // tray มีเฉพาะตัวที่ต้องเติม + ตัวหลอกที่ไม่อยู่ในคำ
+      setTray(buildTray(hiddenLetters, decoys, all));
       setSlots(new Array(entry.word.length).fill(null));
       setPhase("idle");
       if (listenMode) sound.speakWord(entry.word);
@@ -59,6 +70,8 @@ export function SpellingRound({
       clearTimeout(setup);
       t.forEach(clearTimeout);
     };
+    // mask ขึ้นกับ entry.word เสมอ (คำเปลี่ยน mask เปลี่ยน) — ใช้ word เป็น dep พอ
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry.word, decoys, listenMode]);
 
   const later = useCallback((fn: () => void, ms: number) => {
@@ -69,7 +82,8 @@ export function SpellingRound({
 
   const tapTile = (tile: Tile) => {
     if (phase !== "idle" || paused || usedTileIds.has(tile.id)) return;
-    const firstEmpty = slots.indexOf(null);
+    // หาช่องว่างช่องแรกเฉพาะตำแหน่งที่ซ่อน (ช่อง given เติมไม่ได้)
+    const firstEmpty = slots.findIndex((s, i) => hidden[i] && s === null);
     if (firstEmpty === -1) return;
     sound.tap();
     sound.speakLetter(tile.letter);
@@ -77,10 +91,13 @@ export function SpellingRound({
     next[firstEmpty] = tile.id;
     setSlots(next);
 
-    // ช่องเต็ม → ตรวจ (เทียบตัวอักษร ไม่ใช่ tile id — รองรับตัวซ้ำ เช่น EGG)
-    if (!next.includes(null)) {
+    // ช่องซ่อนเต็มครบ → ตรวจ (เทียบตัวอักษร ไม่ใช่ tile id — รองรับตัวซ้ำ เช่น EGG)
+    const allFilled = next.every((s, i) => !hidden[i] || s !== null);
+    if (allFilled) {
       const attempt = next
-        .map((id) => tray.find((t) => t.id === id)?.letter ?? "")
+        .map((id, i) =>
+          hidden[i] ? (tray.find((t) => t.id === id)?.letter ?? "") : letters[i]
+        )
         .join("");
       if (attempt === entry.word) {
         setPhase("correct");
@@ -100,7 +117,7 @@ export function SpellingRound({
   };
 
   const tapSlot = (index: number) => {
-    if (phase !== "idle" || paused || !slots[index]) return;
+    if (phase !== "idle" || paused || !hidden[index] || !slots[index]) return;
     sound.tap();
     const next = [...slots];
     next[index] = null;
@@ -137,6 +154,23 @@ export function SpellingRound({
         }`}
       >
         {slots.map((tileId, i) => {
+          // ช่อง given: โชว์ตัวอักษรตายตัว แตะไม่ได้ (โหมดเติมคำ)
+          if (!hidden[i]) {
+            return (
+              <span
+                key={i}
+                aria-label={`ตัวอักษร ${letters[i]} (ให้มาแล้ว)`}
+                className={`flex size-14 items-center justify-center rounded-2xl border-4 border-border/60 bg-muted-surface font-heading text-3xl font-bold text-muted sm:size-16 sm:text-4xl ${
+                  phase === "correct" ? "animate-pop" : ""
+                }`}
+                style={
+                  phase === "correct" ? { animationDelay: `${i * 0.06}s` } : undefined
+                }
+              >
+                {letters[i]}
+              </span>
+            );
+          }
           const letter = tileId
             ? tray.find((t) => t.id === tileId)?.letter
             : null;

@@ -12,6 +12,7 @@ export function LevelComplete({
   stars,
   maxLevel,
   bonusEnergy,
+  mapHref = "/levels",
   onReplay,
   onNext,
 }: {
@@ -20,6 +21,8 @@ export function LevelComplete({
   maxLevel: number;
   /** ได้โบนัส ⚡ จาก 3 ดาวครั้งแรกไหม */
   bonusEnergy: boolean;
+  /** แผนที่ด่านของเกมนี้ */
+  mapHref?: string;
   onReplay: () => void;
   /** ไปด่านถัดไป (หัก energy ใน handler) */
   onNext: () => void;
@@ -50,14 +53,14 @@ export function LevelComplete({
               ด่านถัดไป →
             </ChunkyButton>
           ) : (
-            <ChunkyButton href="/levels" variant="sunny" size="lg">
+            <ChunkyButton href={mapHref} variant="sunny" size="lg">
               🏆 เก่งที่สุด! กลับแผนที่
             </ChunkyButton>
           )}
           <ChunkyButton onClick={onReplay} variant="primary" size="sm">
             🔄 เล่นอีกครั้ง
           </ChunkyButton>
-          <ChunkyButton href="/levels" variant="white" size="sm">
+          <ChunkyButton href={mapHref} variant="white" size="sm">
             🗺️ แผนที่ด่าน
           </ChunkyButton>
         </div>

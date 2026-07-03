@@ -17,10 +17,17 @@ export function shuffle<T>(arr: T[]): T[] {
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-/** สร้างถาด tile: ตัวอักษรของคำ + ตัวหลอกที่ไม่อยู่ในคำ แล้วสลับ */
-export function buildTray(word: string, decoys: number): Tile[] {
-  const letters = word.split("");
-  const pool = ALPHABET.split("").filter((c) => !letters.includes(c));
+/**
+ * สร้างถาด tile: ตัวอักษรที่ต้องเติม + ตัวหลอก แล้วสลับ
+ * @param letters เฉพาะตัวที่ผู้เล่นต้องเติม (โหมดเติมคำส่งมาแค่ช่องที่ซ่อน)
+ * @param avoid ตัวอักษรทั้งคำ — ตัวหลอกต้องไม่ซ้ำกับตัวในคำ (กัน decoy ที่ดูถูก)
+ */
+export function buildTray(
+  letters: string[],
+  decoys: number,
+  avoid: string[] = letters
+): Tile[] {
+  const pool = ALPHABET.split("").filter((c) => !avoid.includes(c));
   const decoyLetters = shuffle(pool).slice(0, decoys);
   const tiles = [
     ...letters.map((letter, i) => ({ id: `w${i}-${letter}`, letter })),

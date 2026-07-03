@@ -1,6 +1,6 @@
 "use client";
 
-// โหมดผจญภัย: เล่นทีละคำจนครบด่าน → คิดดาว → บันทึก best-of → ปลดด่านถัดไป
+// โหมดผจญภัย (สะกดคำ/เติมตัวอักษร): เล่นทีละคำจนครบด่าน → คิดดาว → บันทึก best-of → ปลดด่านถัดไป
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -10,9 +10,11 @@ import {
   energyCostToStart,
   type Stars,
 } from "@/src/domain/services/rules";
+import { maskWord, type AdventureGame } from "@/src/domain/services/mask";
 import { useProgressStore } from "@/src/presentation/stores/progress.store";
 import { useEnergyStore } from "@/src/presentation/stores/energy.store";
 import { useEntitlementStore } from "@/src/presentation/stores/entitlement.store";
+import { getAdventure } from "@/src/presentation/lib/adventures";
 import { sound } from "@/src/presentation/lib/sound";
 import { SpellingRound } from "./spelling-round";
 import { GameHeader } from "./game-header";
@@ -23,9 +25,11 @@ import { EnergyEmptyModal } from "../energy-hud";
 export function GameScreen({
   level,
   maxLevel,
+  game = "spell",
 }: {
   level: LevelConfig;
   maxLevel: number;
+  game?: AdventureGame;
 }) {
   const router = useRouter();
   const [wordIndex, setWordIndex] = useState(0);
@@ -40,11 +44,13 @@ export function GameScreen({
   const [runId, setRunId] = useState(0);
 
   const saveStars = useProgressStore((s) => s.saveStars);
-  const allStars = useProgressStore((s) => s.stars);
+  const starsByGame = useProgressStore((s) => s.starsByGame);
   const spend = useEnergyStore((s) => s.spend);
   const gainEnergy = useEnergyStore((s) => s.gain);
   const unlimited = useEntitlementStore((s) => s.hasUnlimitedEnergy());
 
+  const adventure = getAdventure(game);
+  const gameStars = starsByGame[game];
   const entry = level.words[wordIndex];
   const total = level.words.length;
 
@@ -55,9 +61,9 @@ export function GameScreen({
     }
     // จบด่าน
     const stars = computeStars(mistakes);
-    const hadThreeBefore = (allStars[level.level] ?? 0) === 3;
-    saveStars(level.level, stars);
-    // โบนัส 3 ดาวครั้งแรก +1⚡
+    const hadThreeBefore = (gameStars[level.level] ?? 0) === 3;
+    saveStars(game, level.level, stars);
+    // โบนัส 3 ดาวครั้งแรกของด่าน (ต่อเกม) +1⚡
     const bonusEnergy = stars === 3 && !hadThreeBefore && !unlimited;
     if (bonusEnergy) {
       gainEnergy(1);
@@ -84,14 +90,14 @@ export function GameScreen({
     const cost = energyCostToStart({
       kind: "adventure",
       level: next,
-      stars: allStars,
+      stars: gameStars,
       unlimited,
     });
     if (cost > 0 && !spend()) {
       setEmptyOpen(true);
       return;
     }
-    router.push(`/play/${next}`);
+    router.push(adventure.playRoute(next));
   };
 
   return (
@@ -101,7 +107,8 @@ export function GameScreen({
         center={
           <div>
             <p className="font-bold text-brand-700">
-              {level.title} · คำที่ {Math.min(wordIndex + 1, total)}/{total}
+              {adventure.emoji} {adventure.name} · {level.title} · คำที่{" "}
+              {Math.min(wordIndex + 1, total)}/{total}
             </p>
             <div className="mt-1 flex justify-center gap-1">
               {level.words.map((_, i) => (
@@ -125,6 +132,7 @@ export function GameScreen({
         key={`${runId}-${wordIndex}`}
         entry={entry}
         decoys={level.decoys}
+        mask={maskWord(entry.word, game)}
         paused={paused || result !== null}
         onCorrect={handleCorrect}
         onWrong={() => setMistakes((m) => m + 1)}
@@ -134,7 +142,7 @@ export function GameScreen({
         open={paused && !result}
         onResume={() => setPaused(false)}
         onRestart={restart}
-        backHref="/levels"
+        backHref={adventure.mapRoute}
       />
 
       {result && (
@@ -143,6 +151,7 @@ export function GameScreen({
           stars={result.stars}
           maxLevel={maxLevel}
           bonusEnergy={result.bonusEnergy}
+          mapHref={adventure.mapRoute}
           onReplay={handleReplay}
           onNext={handleNext}
         />

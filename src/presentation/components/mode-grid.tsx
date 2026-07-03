@@ -2,45 +2,52 @@
 
 import Link from "next/link";
 import { PREMIUM_MODES } from "@/src/presentation/lib/modes";
+import { ADVENTURES } from "@/src/presentation/lib/adventures";
 import { useEntitlementStore } from "@/src/presentation/stores/entitlement.store";
 import { useProgressStore } from "@/src/presentation/stores/progress.store";
 import { useMounted } from "@/src/presentation/lib/use-mounted";
-import { StarRow } from "./star-row";
 
-/** ตารางเลือกโหมด: ผจญภัยเด่นสุด + โหมดพรีเมียม (ล็อกจนกว่าซื้อ) */
+const MAX_STARS_PER_GAME = 15; // 5 ด่าน × 3 ดาว
+
+/** ตารางเลือกโหมด: ผจญภัย 4 เกม (ฟรี) + โหมดพรีเมียม (ล็อกจนกว่าซื้อ) */
 export function ModeGrid() {
   const mounted = useMounted();
   const hasMode = useEntitlementStore((s) => s.hasMode);
-  const stars = useProgressStore((s) => s.stars);
-  const totalStars = mounted
-    ? Object.values(stars).reduce<number>((a, b) => a + b, 0)
-    : 0;
+  const starsByGame = useProgressStore((s) => s.starsByGame);
+
+  const totalOf = (game: (typeof ADVENTURES)[number]["game"]) =>
+    mounted
+      ? Object.values(starsByGame[game]).reduce<number>((a, b) => a + b, 0)
+      : 0;
 
   return (
     <div className="flex flex-col gap-4">
-      {/* ผจญภัย — โหมดหลักฟรี */}
-      <Link
-        href="/levels"
-        className="block rounded-4xl border-4 border-border bg-brand-500 p-5 text-on-brand shadow-[0_8px_0_var(--brand-700)] transition-transform active:translate-y-1 active:shadow-[0_3px_0_var(--brand-700)]"
-      >
-        <div className="flex items-center gap-4">
-          <span className="flex size-16 items-center justify-center rounded-2xl bg-card text-4xl shadow-inner">
-            🗺️
-          </span>
-          <div className="flex-1 text-left">
-            <h2 className="text-2xl font-bold">ผจญภัย</h2>
-            <p className="text-sm opacity-90">
-              ตะลุยด่าน 1–5 สะกดคำ เก็บดาวให้ครบ!
-            </p>
-          </div>
-          <div className="text-right">
-            <StarRow stars={3} size="sm" />
-            <p className="mt-1 text-sm font-bold">{totalStars}/15 ⭐</p>
-          </div>
-        </div>
-      </Link>
+      {/* ผจญภัย — โหมดหลักฟรี 4 เกม */}
+      <h2 className="text-lg font-bold text-brand-800">🗺️ ผจญภัย (ฟรี)</h2>
+      <div className="grid grid-cols-2 gap-3">
+        {ADVENTURES.map((a) => (
+          <Link
+            key={a.game}
+            href={a.mapRoute}
+            className={`flex flex-col items-center gap-1 rounded-3xl border-4 border-border p-4 text-center shadow-[0_6px_0_var(--brand-700)] transition-transform active:translate-y-1 ${
+              a.game === "spell" ? "bg-brand-500" : "bg-brand-400"
+            }`}
+          >
+            <span className="text-4xl">{a.emoji}</span>
+            <h3 className="font-bold text-on-brand">{a.name}</h3>
+            <span className="rounded-full bg-card px-3 py-0.5 font-heading text-sm font-bold tracking-widest text-brand-600">
+              {a.sample}
+            </span>
+            <p className="text-xs text-on-brand opacity-90">{a.description}</p>
+            <span className="mt-1 text-sm font-bold text-on-brand">
+              ⭐ {totalOf(a.game)}/{MAX_STARS_PER_GAME}
+            </span>
+          </Link>
+        ))}
+      </div>
 
       {/* โหมดพรีเมียม */}
+      <h2 className="mt-2 text-lg font-bold text-brand-800">✨ โหมดพิเศษ</h2>
       <div className="grid grid-cols-2 gap-3">
         {PREMIUM_MODES.map((m) => {
           const owned = mounted && hasMode(m.id);

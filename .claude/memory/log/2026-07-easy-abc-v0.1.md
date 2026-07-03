@@ -9,6 +9,8 @@ metadata:
 
 # 2026-07 — Easy ABC v0.1 build แรกเสร็จ ✅
 
+**อัปเดต 2026-07-03:** เพิ่มโหมดผจญภัย "เติมตัวอักษร" 3 เกมฟรี (fill-front/back/middle — กติกา mask อยู่ `src/domain/services/mask.ts` จุดเดียว, ดาวแยก track ต่อเกมใน progress store **v2 + migrate**, routes `/levels/[game]` + `/play/[game]/[level]`) · งาน **PWA ถูกยกเลิก** (แผนเคยออกแบบไว้: เขียน sw.js เองเพราะ Serwist ต้อง webpack/ชน Turbopack — ถ้ากลับมาทำดูแผนเก่าใน git history ได้) · PromptPay ID ใน products.master.ts พี่เปลี่ยนเป็นของจริงแล้ว
+
 **สถานะ (2026-07-02):** เกมครบทุกส่วนตามแผน commit `cfa1ae0` (83 ไฟล์) —
 ผจญภัย 5 ด่าน + โหมดพรีเมียม 4 โหมด + Energy + ร้านค้า PromptPay + ธีม 3 ตัว (light+dark) + TabBar/route groups
 Gates เขียวหมด: eslint + tsc + vitest 21/21 + `npm run build` (prerender 18 หน้า) · ทุก route ตอบถูก (200/404)
