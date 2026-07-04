@@ -1,19 +1,43 @@
 "use client";
 
 import Link from "next/link";
+import type { WordEntry } from "@/src/domain/ports/level.port";
+import type { WordCategory } from "@/src/domain/ports/word.port";
+import { maskWord, type AdventureGame } from "@/src/domain/services/mask";
 import { PREMIUM_MODES } from "@/src/presentation/lib/modes";
 import { ADVENTURES } from "@/src/presentation/lib/adventures";
 import { useEntitlementStore } from "@/src/presentation/stores/entitlement.store";
 import { useProgressStore } from "@/src/presentation/stores/progress.store";
+import { useCategoryStore } from "@/src/presentation/stores/category.store";
 import { useMounted } from "@/src/presentation/lib/use-mounted";
 
 const MAX_STARS_PER_GAME = 15; // 5 ด่าน × 3 ดาว
 
+/** ตัวอย่าง mask ของคำตามเกม เช่น CAT + fill-front → "_ A T" */
+function sampleOf(word: string, game: AdventureGame): string {
+  const hidden = maskWord(word, game);
+  return word
+    .split("")
+    .map((ch, i) => (hidden[i] ? "_" : ch))
+    .join(" ");
+}
+
 /** ตารางเลือกโหมด: ผจญภัย 4 เกม (ฟรี) + โหมดพรีเมียม (ล็อกจนกว่าซื้อ) */
-export function ModeGrid() {
+export function ModeGrid({
+  sampleWords,
+}: {
+  sampleWords?: Partial<Record<WordCategory, WordEntry[]>>;
+}) {
   const mounted = useMounted();
   const hasMode = useEntitlementStore((s) => s.hasMode);
   const starsByGame = useProgressStore((s) => s.starsByGame);
+  const category = useCategoryStore((s) => s.category);
+
+  // คำตัวแทนของหมวดที่เลือก คำละใบ (mixed/ยังไม่เลือก → ไอคอน/ตัวอย่างทั่วไปของเกม)
+  const reps =
+    mounted && category && category !== "mixed"
+      ? sampleWords?.[category]
+      : undefined;
 
   const totalOf = (game: (typeof ADVENTURES)[number]["game"]) =>
     mounted
@@ -25,7 +49,9 @@ export function ModeGrid() {
       {/* ผจญภัย — โหมดหลักฟรี 4 เกม */}
       <h2 className="text-lg font-bold text-brand-800">🗺️ ผจญภัย (ฟรี)</h2>
       <div className="grid grid-cols-2 gap-3">
-        {ADVENTURES.map((a) => (
+        {ADVENTURES.map((a, i) => {
+          const word = reps && reps.length ? reps[i % reps.length] : undefined;
+          return (
           <Link
             key={a.game}
             href={a.mapRoute}
@@ -33,17 +59,18 @@ export function ModeGrid() {
               a.game === "spell" ? "bg-brand-500" : "bg-brand-400"
             }`}
           >
-            <span className="text-4xl">{a.emoji}</span>
+            <span className="text-4xl">{word ? word.emoji : a.emoji}</span>
             <h3 className="font-bold text-on-brand">{a.name}</h3>
             <span className="rounded-full bg-card px-3 py-0.5 font-heading text-sm font-bold tracking-widest text-brand-600">
-              {a.sample}
+              {word ? sampleOf(word.word, a.game) : a.sample}
             </span>
             <p className="text-xs text-on-brand opacity-90">{a.description}</p>
             <span className="mt-1 text-sm font-bold text-on-brand">
               ⭐ {totalOf(a.game)}/{MAX_STARS_PER_GAME}
             </span>
           </Link>
-        ))}
+          );
+        })}
       </div>
 
       {/* โหมดพรีเมียม */}

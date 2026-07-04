@@ -4,6 +4,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { WordEntry } from "@/src/domain/ports/level.port";
+import type { WordBank } from "@/src/domain/ports/word.port";
+import { useCategoryPool } from "@/src/presentation/lib/use-category-pool";
 import { pickQuizChoices, shuffle } from "@/src/presentation/lib/shuffle";
 import { useStatsStore } from "@/src/presentation/stores/stats.store";
 import { useMounted } from "@/src/presentation/lib/use-mounted";
@@ -18,7 +20,8 @@ const QUESTIONS_PER_ROUND = 10;
 
 type Phase = "start" | "playing" | "result";
 
-export function ModeQuiz({ pool }: { pool: WordEntry[] }) {
+export function ModeQuiz({ bank }: { bank: WordBank }) {
+  const pool = useCategoryPool(bank);
   const mounted = useMounted();
   const best = useStatsStore((s) => s.bestQuiz);
   const report = useStatsStore((s) => s.report);

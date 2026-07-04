@@ -4,7 +4,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { LevelConfig } from "@/src/domain/ports/level.port";
+import type { LevelConfig, WordEntry } from "@/src/domain/ports/level.port";
 import {
   computeStars,
   energyCostToStart,
@@ -14,6 +14,7 @@ import { maskWord, type AdventureGame } from "@/src/domain/services/mask";
 import { useProgressStore } from "@/src/presentation/stores/progress.store";
 import { useEnergyStore } from "@/src/presentation/stores/energy.store";
 import { useEntitlementStore } from "@/src/presentation/stores/entitlement.store";
+import { useCategoryStore } from "@/src/presentation/stores/category.store";
 import { getAdventure } from "@/src/presentation/lib/adventures";
 import { sound } from "@/src/presentation/lib/sound";
 import { SpellingRound } from "./spelling-round";
@@ -26,10 +27,13 @@ export function GameScreen({
   level,
   maxLevel,
   game = "spell",
+  wordsByCategory,
 }: {
   level: LevelConfig;
   maxLevel: number;
   game?: AdventureGame;
+  /** คำของด่านนี้แยกต่อหมวด (สไลซ์แล้ว) — ไม่ส่ง/หมวด "คละ" = ใช้ชุดคำดั้งเดิมใน level.words */
+  wordsByCategory?: Record<string, WordEntry[]>;
 }) {
   const router = useRouter();
   const [wordIndex, setWordIndex] = useState(0);
@@ -51,8 +55,15 @@ export function GameScreen({
 
   const adventure = getAdventure(game);
   const gameStars = starsByGame[game];
-  const entry = level.words[wordIndex];
-  const total = level.words.length;
+
+  // ชุดคำตามหมวดที่เลือก (GameScreen อยู่ใต้ PlayGate ที่ guard mounted แล้ว — อ่าน store ได้ตรง ๆ)
+  const category = useCategoryStore((s) => s.category);
+  const categoryWords =
+    category && category !== "mixed" ? wordsByCategory?.[category] : undefined;
+  const words = categoryWords?.length ? categoryWords : level.words;
+
+  const entry = words[wordIndex];
+  const total = words.length;
 
   const handleCorrect = () => {
     if (wordIndex + 1 < total) {
@@ -111,7 +122,7 @@ export function GameScreen({
               {Math.min(wordIndex + 1, total)}/{total}
             </p>
             <div className="mt-1 flex justify-center gap-1">
-              {level.words.map((_, i) => (
+              {words.map((_, i) => (
                 <span
                   key={i}
                   className={`size-2.5 rounded-full ${
@@ -129,7 +140,7 @@ export function GameScreen({
       />
 
       <SpellingRound
-        key={`${runId}-${wordIndex}`}
+        key={`${runId}-${wordIndex}-${entry.word}`}
         entry={entry}
         decoys={level.decoys}
         mask={maskWord(entry.word, game)}

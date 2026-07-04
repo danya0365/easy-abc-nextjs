@@ -136,6 +136,14 @@ export function SettingsPanel() {
         <ChunkyButton href="/how-to-play" variant="white" size="sm">
           วิธีเล่น
         </ChunkyButton>
+        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+          <Link href="/terms" className="font-bold text-brand-500 underline">
+            ข้อกำหนดการใช้งาน
+          </Link>
+          <Link href="/privacy" className="font-bold text-brand-500 underline">
+            นโยบายความเป็นส่วนตัว
+          </Link>
+        </div>
       </Section>
 
       <Section title="🗑️ ล้างความคืบหน้า">

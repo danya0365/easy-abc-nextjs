@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createLevelRepo } from "@/src/adapters/levels";
+import { createWordRepo } from "@/src/adapters/words";
 import {
   FILL_SLUGS,
   gameFromSlug,
@@ -9,6 +10,7 @@ import {
 import { LevelMap } from "@/src/presentation/components/level-map";
 import { EnergyHud } from "@/src/presentation/components/energy-hud";
 import { SoundToggle } from "@/src/presentation/components/sound-toggle";
+import { CurrentCategoryBar } from "@/src/presentation/components/current-category-bar";
 
 export function generateStaticParams() {
   return FILL_SLUGS.map((game) => ({ game }));
@@ -34,7 +36,10 @@ export default async function FillLevelsPage({
   const game = gameFromSlug(slug);
   if (!game) notFound();
 
-  const result = await createLevelRepo().getAll();
+  const [result, categories] = await Promise.all([
+    createLevelRepo().getAll(),
+    createWordRepo().getCategories(),
+  ]);
   if (!result.ok) {
     return (
       <p className="p-8 text-center text-error">
@@ -63,6 +68,7 @@ export default async function FillLevelsPage({
         </span>{" "}
         · ผ่านด่านเพื่อปลดด่านถัดไป!
       </p>
+      {categories.ok && <CurrentCategoryBar categories={categories.value} />}
       <LevelMap levels={result.value} game={game} />
     </div>
   );

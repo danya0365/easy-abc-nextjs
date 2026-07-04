@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
 import { createLevelRepo } from "@/src/adapters/levels";
+import { createWordRepo } from "@/src/adapters/words";
 import { LevelMap } from "@/src/presentation/components/level-map";
 import { EnergyHud } from "@/src/presentation/components/energy-hud";
 import { SoundToggle } from "@/src/presentation/components/sound-toggle";
+import { CurrentCategoryBar } from "@/src/presentation/components/current-category-bar";
 
 export const metadata: Metadata = {
   title: "เลือกด่าน",
 };
 
 export default async function LevelsPage() {
-  const result = await createLevelRepo().getAll();
+  const [result, categories] = await Promise.all([
+    createLevelRepo().getAll(),
+    createWordRepo().getCategories(),
+  ]);
   if (!result.ok) {
     return (
       <p className="p-8 text-center text-error">
@@ -29,9 +34,10 @@ export default async function LevelsPage() {
           <SoundToggle />
         </div>
       </div>
-      <p className="mb-4 text-center text-sm text-brand-800">
+      <p className="mb-3 text-center text-sm text-brand-800">
         🏰 ผ่านด่านเพื่อปลดด่านถัดไป — เก็บดาวให้ครบ 15 ดวง!
       </p>
+      {categories.ok && <CurrentCategoryBar categories={categories.value} />}
       <LevelMap levels={result.value} />
     </div>
   );
