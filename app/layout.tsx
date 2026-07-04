@@ -71,6 +71,11 @@ export const metadata: Metadata = {
     title,
     description,
   },
+  // ยืนยันความเป็นเจ้าของโดเมนกับ Google Search Console (สำหรับ OAuth brand verification)
+  // ตั้งค่า GOOGLE_SITE_VERIFICATION = code ที่ Search Console ให้ (เว้นว่าง = ไม่ render)
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export const viewport: Viewport = {

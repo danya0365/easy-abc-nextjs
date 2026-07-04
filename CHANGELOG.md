@@ -13,6 +13,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.2.1] - 2026-07-04
+
+### Added
+
+- รองรับ Google Search Console verification: ฝัง meta tag `google-site-verification` ในหน้าแรกจาก env `GOOGLE_SITE_VERIFICATION` (เว้นว่าง = ไม่ render) — สำหรับยืนยันโดเมนตอน OAuth brand verification
+
+## [1.2.0] - 2026-07-04
+
+### Added
+
+- แจ้งเตือน LINE หา admin เมื่อมีการชำระเงิน: ทุกครั้งที่ผู้ใช้ซื้อสำเร็จ ยิง LINE push (Messaging API) บอกสินค้า/ยอด/ผู้ซื้อ/เลขที่ออเดอร์ — fail-safe (ไม่มี token/ส่งพลาด ไม่ทำให้การซื้อพัง) · ตั้งค่าผ่าน `LINE_CHANNEL_ACCESS_TOKEN` + `LINE_ADMIN_USER_ID`
+
 ## [1.1.2] - 2026-07-04
 
 ### Added
