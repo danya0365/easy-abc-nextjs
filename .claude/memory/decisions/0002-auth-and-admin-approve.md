@@ -43,6 +43,7 @@ v0.1 เป็น client-only ล้วน — การซื้อ/ดาว�
 ## ผลที่ตามมา / ข้อควรระวัง
 
 - ⚠️ **ต้องมี secrets ก่อนใช้จริง** (พี่จัดเอง): Turso URL+token, Google OAuth client (redirect `${APP_URL}/api/auth/callback/google`), `BETTER_AUTH_SECRET` — ดู `.env.example` · dev ใช้ `file:./dev.db` แทน Turso ได้
+- **Auto-migrate ตอน deploy**: `vercel-build` script รัน `tsx src/server/db/migrate.ts` (programmatic migrator อ่าน `drizzle/`) ก่อน `next build` → Vercel migrate ให้อัตโนมัติทุก deploy · ข้ามถ้าไม่มี `TURSO_DATABASE_URL` (build local ปลอดภัย) · ถ้า Vercel ไม่รัน `vercel-build` ให้ตั้ง Build Command = `npm run vercel-build`
 - ⚠️ **schema auth ต้องตรงกับ `@better-auth/cli generate` เป๊ะ** (timestamp_ms ไม่ใช่ timestamp) — แก้ auth options แล้ว sync `schema.ts` + gen migration ใหม่
 - ⚠️ **UX แลก**: ผู้เล่นต้องรอ admin อนุมัติ ไม่ปลดทันที (โชว์ "⏳ รออนุมัติ")
 - ✅ **admin path พิสูจน์ครบ end-to-end**: seed → login email/password → session role=admin → เข้า `/admin` ผ่าน (200), ไม่มี session → 404 · ⚠️ ยังไม่ได้ทดสอบ Google OAuth round-trip จริง (ต้องมี creds — เป็น path ผู้เล่นทั่วไป)

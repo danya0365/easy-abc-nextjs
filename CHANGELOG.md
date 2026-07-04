@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.1.2] - 2026-07-04
+
+### Added
+
+- Auto-migrate ฐานข้อมูลตอน deploy Vercel: `vercel-build` รัน migration (programmatic migrator) ก่อน `next build` — Vercel ลงตารางให้อัตโนมัติทุก deploy (ข้ามตอน build local ที่ไม่มี `TURSO_DATABASE_URL`)
+
 ## [1.1.1] - 2026-07-04
 
 ### Changed
