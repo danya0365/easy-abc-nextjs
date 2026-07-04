@@ -9,6 +9,8 @@ metadata:
 
 # 2026-07 — Easy ABC v0.1 build แรกเสร็จ ✅
 
+**อัปเดต 2026-07-03 (backend ตัวแรก):** เพิ่ม **login Google (better-auth) + Turso/Drizzle + กู้คืนการซื้อ + cloud save ดาว + หน้า admin/dashboard รายได้** · **เปลี่ยน IAP จาก auto-approve → admin อนุมัติ** (order pending → admin approve ถึงปลดล็อก) — รายละเอียด+ข้อควรระวังทั้งหมดใน [ADR-0002](../decisions/0002-auth-and-admin-approve.md). ทำครบ 4 เฟส, gates เขียว (lint/tsc/vitest 48/build 42 หน้า), verify DB จริงบน `file:./dev.db` + guard 404. **ยังไม่ verify Google OAuth round-trip จริง** (ต้องมี creds — พี่จัด) · **ก่อน prod ต้องตั้ง env**: TURSO_*, GOOGLE_CLIENT_*, BETTER_AUTH_SECRET (ดู `.env.example`) + ตั้ง admin คนแรก `npm run db:make-admin -- email`
+
 **อัปเดต 2026-07-03:** เพิ่มโหมดผจญภัย "เติมตัวอักษร" 3 เกมฟรี (fill-front/back/middle — กติกา mask อยู่ `src/domain/services/mask.ts` จุดเดียว, ดาวแยก track ต่อเกมใน progress store **v2 + migrate**, routes `/levels/[game]` + `/play/[game]/[level]`) · งาน **PWA ถูกยกเลิก** (แผนเคยออกแบบไว้: เขียน sw.js เองเพราะ Serwist ต้อง webpack/ชน Turbopack — ถ้ากลับมาทำดูแผนเก่าใน git history ได้) · PromptPay ID ใน products.master.ts พี่เปลี่ยนเป็นของจริงแล้ว
 
 **สถานะ (2026-07-02):** เกมครบทุกส่วนตามแผน commit `cfa1ae0` (83 ไฟล์) —

@@ -52,6 +52,11 @@ export default function HowToPlayPage() {
           <span className="font-heading font-bold">H__E</span>) แต่ละเกมมีด่านและดาวของตัวเอง
         </p>
         <p className="mt-2">
+          📚 <strong className="text-card-foreground">หมวดคำศัพท์:</strong>{" "}
+          ก่อนเล่นจะให้เลือกหมวดก่อน (สัตว์ อาหาร ธรรมชาติ ฯลฯ หรือคละ) — คำในเกมจะเปลี่ยนตามหมวด
+          ใช้ได้ทุกโหมด กดปุ่ม “เปลี่ยน” สลับหมวดได้ทุกเมื่อ ส่วนดาวเก็บรวมกันไม่หาย
+        </p>
+        <p className="mt-2">
           ⚡ <strong className="text-card-foreground">Energy:</strong> เริ่มด่านใหม่ใช้ 1 แท่ง
           (เล่นซ้ำด่านที่ผ่านแล้วฟรี!) เต็มเองทุก 5 นาที และเต็มหลอดฟรีทุกวันแรกที่เข้าเล่น
         </p>

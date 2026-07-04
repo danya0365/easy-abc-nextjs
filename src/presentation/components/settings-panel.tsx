@@ -10,6 +10,7 @@ import { useMounted } from "@/src/presentation/lib/use-mounted";
 import { ThemeSwitcher } from "./theme-switcher";
 import { ChunkyButton } from "./chunky-button";
 import { AppVersion } from "./app-version";
+import { AuthPanel } from "./auth-panel";
 
 function Section({
   title,
@@ -73,6 +74,10 @@ export function SettingsPanel() {
 
   return (
     <div className="flex flex-col gap-4">
+      <Section title="👤 บัญชี">
+        <AuthPanel />
+      </Section>
+
       <Section title="🔊 เสียง">
         <div className="flex flex-col gap-2">
           <ToggleRow
@@ -112,8 +117,14 @@ export function SettingsPanel() {
                 </span>
                 <span className="text-muted">
                   {o.amountThb}฿ ·{" "}
-                  {new Date(o.approvedAt).toLocaleDateString("th-TH")} ·{" "}
-                  <span className="text-success">อนุมัติแล้ว</span>
+                  {new Date(o.createdAt).toLocaleDateString("th-TH")} ·{" "}
+                  {o.status === "approved" ? (
+                    <span className="text-success">อนุมัติแล้ว</span>
+                  ) : o.status === "pending" ? (
+                    <span className="text-warning">รออนุมัติ</span>
+                  ) : (
+                    <span className="text-error">ถูกปฏิเสธ</span>
+                  )}
                 </span>
               </li>
             ))}
@@ -125,6 +136,14 @@ export function SettingsPanel() {
         <ChunkyButton href="/how-to-play" variant="white" size="sm">
           วิธีเล่น
         </ChunkyButton>
+        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+          <Link href="/terms" className="font-bold text-brand-500 underline">
+            ข้อกำหนดการใช้งาน
+          </Link>
+          <Link href="/privacy" className="font-bold text-brand-500 underline">
+            นโยบายความเป็นส่วนตัว
+          </Link>
+        </div>
       </Section>
 
       <Section title="🗑️ ล้างความคืบหน้า">

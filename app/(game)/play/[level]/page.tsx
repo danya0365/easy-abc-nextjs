@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createLevelRepo } from "@/src/adapters/levels";
+import { createWordRepo } from "@/src/adapters/words";
+import { levelWordsByCategory } from "@/src/domain/services/word-bank";
 import { PlayGate } from "@/src/presentation/components/play-gate";
 import { GameScreen } from "@/src/presentation/components/game/game-screen";
 
@@ -27,12 +29,22 @@ export default async function PlayPage({
   if (!Number.isInteger(n)) notFound();
 
   const repo = createLevelRepo();
-  const [config, all] = await Promise.all([repo.getByLevel(n), repo.getAll()]);
+  const [config, all, bank] = await Promise.all([
+    repo.getByLevel(n),
+    repo.getAll(),
+    createWordRepo().getBank(),
+  ]);
   if (!config.ok || !all.ok) notFound();
 
   return (
     <PlayGate level={n}>
-      <GameScreen level={config.value} maxLevel={all.value.length} />
+      <GameScreen
+        level={config.value}
+        maxLevel={all.value.length}
+        wordsByCategory={
+          bank.ok ? levelWordsByCategory(bank.value, n) : undefined
+        }
+      />
     </PlayGate>
   );
 }

@@ -11,7 +11,21 @@ const eslintConfig = defineConfig([
     rules: {
       "no-restricted-imports": [
         "error",
-        { patterns: ["next", "next/*", "react", "react-dom", "zustand", "zustand/*"] },
+        {
+          patterns: [
+            "next",
+            "next/*",
+            "react",
+            "react-dom",
+            "zustand",
+            "zustand/*",
+            "better-auth",
+            "better-auth/*",
+            "drizzle-orm",
+            "drizzle-orm/*",
+            "@libsql/*",
+          ],
+        },
       ],
     },
   },

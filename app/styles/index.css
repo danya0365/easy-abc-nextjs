@@ -27,8 +27,14 @@
 }
 
 @layer utilities {
-  /* พื้นหลังท้องฟ้า gradient ตามภาพโปรโมต (สลับตามธีม/dark อัตโนมัติผ่าน token) */
-  .bg-sky-scene {
+  /* พื้นหลังท้องฟ้า gradient ตามภาพโปรโมต (สลับตามธีม/dark อัตโนมัติผ่าน token)
+     ทำเป็น layer fixed เต็มจอหลังเนื้อหา — ฟ้าอยู่บนจอเสมอ ไม่ยืดตามความสูงหน้า (กัน bg เพี้ยนตอน scroll)
+     overscroll เลยขอบ เห็น body background-color (--background) เป็น fallback */
+  .bg-sky-scene::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
     background-image: linear-gradient(
       to bottom,
       var(--bg-top),

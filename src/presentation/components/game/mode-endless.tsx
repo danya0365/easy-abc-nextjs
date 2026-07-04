@@ -4,6 +4,8 @@
 
 import { useState } from "react";
 import type { WordEntry } from "@/src/domain/ports/level.port";
+import type { WordBank } from "@/src/domain/ports/word.port";
+import { useCategoryPool } from "@/src/presentation/lib/use-category-pool";
 import { shuffle } from "@/src/presentation/lib/shuffle";
 import { useStatsStore } from "@/src/presentation/stores/stats.store";
 import { useMounted } from "@/src/presentation/lib/use-mounted";
@@ -16,7 +18,8 @@ const DECOYS = 3;
 
 type Phase = "start" | "playing";
 
-export function ModeEndless({ pool }: { pool: WordEntry[] }) {
+export function ModeEndless({ bank }: { bank: WordBank }) {
+  const pool = useCategoryPool(bank);
   const mounted = useMounted();
   const bestStreak = useStatsStore((s) => s.bestEndlessStreak);
   const totalWords = useStatsStore((s) => s.endlessTotalWords);
