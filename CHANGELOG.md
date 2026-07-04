@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.1.1] - 2026-07-04
+
+### Changed
+
+- ตอนยืนยันการชำระเงิน: เพิ่มแอนิเมชัน "กำลังตรวจสอบการชำระเงิน" ~6.5 วิ (ไล่ติ๊กหลายสเต็ป + progress bar) ให้ดูน่าเชื่อขึ้นก่อนขึ้นผลสำเร็จ — recordPurchase จริงรันพร้อมกัน ถ้า error จะไม่แกล้งสำเร็จ
+
 ## [1.1.0] - 2026-07-04
 
 ### Added

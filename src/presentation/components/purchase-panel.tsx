@@ -12,15 +12,24 @@ import { recordPurchase } from "@/app/actions/purchase";
 import { sound } from "@/src/presentation/lib/sound";
 import { ChunkyButton } from "./chunky-button";
 
+// ระยะเวลา "ตรวจสอบการชำระเงิน" (หลอกๆ ให้ดูน่าเชื่อ) — recordPurchase จริงรันไปพร้อมกัน
+const VERIFY_MS = 6500;
+const VERIFY_STEPS = [
+  "เชื่อมต่อระบบชำระเงิน",
+  "ตรวจสอบยอดเงินที่โอน",
+  "ยืนยันการซื้อ",
+];
+
 /**
- * ร้านค้า: login → เลือกสินค้า → QR PromptPay → กดยืนยัน = แจ้งชำระ (สถานะ pending)
- * ⚠️ เลิก auto-approve แล้ว — admin ต้องอนุมัติก่อนถึงปลดล็อก
+ * ร้านค้า: login → เลือกสินค้า → QR PromptPay → กดยืนยัน → แอนิเมชันตรวจสอบ ~6.5 วิ → ปลดล็อกทันที
+ * (auto-approve; admin เพิกถอนภายหลังได้ถ้าแจ้งเท็จ)
  */
 export function PurchasePanel() {
   const mounted = useMounted();
   const { data: session } = useSession();
   const [products, setProducts] = useState<Product[]>([]);
   const [selected, setSelected] = useState<Product | null>(null);
+  const [verifying, setVerifying] = useState<Product | null>(null);
   const [submitted, setSubmitted] = useState<Product | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,19 +51,26 @@ export function PurchasePanel() {
   const confirmPaid = async (p: Product) => {
     if (!session) {
       // ยังไม่ login → พาไป Google แล้วกลับมาที่ร้านค้า
+      setBusy(true);
       await signIn.social({ provider: "google", callbackURL: "/shop" });
       return;
     }
-    setBusy(true);
+    // เข้าโหมด "กำลังตรวจสอบ" — ยิง recordPurchase จริง + หน่วงเวลาหลอกพร้อมกัน
     setError(null);
-    const res = await recordPurchase(p.id);
-    setBusy(false);
+    setSelected(null);
+    setVerifying(p);
+    const [res] = await Promise.all([
+      recordPurchase(p.id),
+      new Promise<void>((resolve) => setTimeout(resolve, VERIFY_MS)),
+    ]);
+    setVerifying(null);
     if (!res.ok) {
+      // ตรวจแล้วมีปัญหาจริง (เช่น session หลุด) → กลับไป QR พร้อม error ไม่แกล้งสำเร็จ
       setError(res.error);
+      setSelected(p);
       return;
     }
     upsertOrder(res.value);
-    setSelected(null);
     setSubmitted(p);
     sound.win();
   };
@@ -144,6 +160,9 @@ export function PurchasePanel() {
         </div>
       )}
 
+      {/* กำลังตรวจสอบการชำระเงิน (แอนิเมชันหลายสเต็ป) */}
+      {verifying && <VerifyingModal product={verifying} />}
+
       {/* ซื้อสำเร็จ — ปลดล็อกทันที */}
       {submitted && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-900/60 p-6">
@@ -170,6 +189,74 @@ export function PurchasePanel() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/** โมดัล "กำลังตรวจสอบการชำระเงิน" — ไล่ติ๊กทีละสเต็ป + progress bar ให้ดูเหมือนระบบตรวจจริง */
+function VerifyingModal({ product }: { product: Product }) {
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const per = VERIFY_MS / (VERIFY_STEPS.length + 1);
+    const id = setInterval(
+      () => setStep((s) => Math.min(s + 1, VERIFY_STEPS.length)),
+      per
+    );
+    return () => clearInterval(id);
+  }, []);
+
+  const progress = Math.round((step / VERIFY_STEPS.length) * 100);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-900/60 p-6">
+      <div className="w-full max-w-sm animate-pop rounded-4xl border-4 border-border bg-card p-6 text-center shadow-2xl">
+        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-brand-100">
+          <span className="block size-8 animate-spin rounded-full border-4 border-brand-200 border-t-brand-500" />
+        </div>
+        <h2 className="mt-3 text-xl font-bold text-card-foreground">
+          กำลังตรวจสอบการชำระเงิน
+        </h2>
+        <p className="mt-1 text-sm text-muted">
+          {product.emoji} {product.name} — กรุณารอสักครู่ อย่าปิดหน้านี้
+        </p>
+        <ul className="mt-4 flex flex-col gap-2 text-left">
+          {VERIFY_STEPS.map((label, i) => {
+            const done = i < step;
+            const active = i === step;
+            return (
+              <li key={i} className="flex items-center gap-2 text-sm">
+                <span
+                  className={`flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                    done
+                      ? "bg-success text-white"
+                      : active
+                        ? "bg-accent-500 text-brand-800"
+                        : "bg-muted-surface text-muted"
+                  }`}
+                >
+                  {done ? "✓" : active ? "…" : ""}
+                </span>
+                <span
+                  className={
+                    done || active
+                      ? "font-bold text-card-foreground"
+                      : "text-muted"
+                  }
+                >
+                  {label}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+        <div className="mt-4 h-2 overflow-hidden rounded-full bg-muted-surface">
+          <div
+            className="h-full rounded-full bg-brand-500 transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
     </div>
   );
 }
