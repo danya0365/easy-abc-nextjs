@@ -22,17 +22,8 @@ export interface AdventureMeta {
   playRoute: (level: number) => string;
 }
 
-/** เกมผจญภัยทั้งหมด (ฟรี) — สะกดคำ + เติมตัวอักษร 3 แบบ */
+/** เกมผจญภัยทั้งหมด (ฟรี) — เรียงจากง่ายไปยาก: เติมหน้า/หลัง (1 ตัว) → เติมกลาง (เพิ่มตามด่าน) → สะกดคำ (ทั้งคำ) */
 export const ADVENTURES: AdventureMeta[] = [
-  {
-    game: "spell",
-    name: "สะกดคำ",
-    emoji: "🗺️",
-    sample: "_ _ _",
-    description: "ดูรูปแล้วสะกดทั้งคำ",
-    mapRoute: "/levels",
-    playRoute: (level) => `/play/${level}`,
-  },
   {
     game: "fill-front",
     name: "เติมข้างหน้า",
@@ -59,6 +50,15 @@ export const ADVENTURES: AdventureMeta[] = [
     description: "เห็นหัวกับท้าย เติมตรงกลางให้ครบ",
     mapRoute: "/levels/middle",
     playRoute: (level) => `/fill/middle/${level}`,
+  },
+  {
+    game: "spell",
+    name: "สะกดคำ",
+    emoji: "🗺️",
+    sample: "_ _ _",
+    description: "ดูรูปแล้วสะกดทั้งคำ",
+    mapRoute: "/levels",
+    playRoute: (level) => `/play/${level}`,
   },
 ];
 
