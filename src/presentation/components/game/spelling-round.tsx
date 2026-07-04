@@ -51,6 +51,11 @@ export function SpellingRound({
   const letters = entry.word.split("");
   const hidden = mask ?? new Array(letters.length).fill(true);
 
+  // คำยาว (6 ตัวอักษร = ยาวสุดในคลังคำ) ย่อช่องลงเล็กน้อยกันตกบรรทัดบนจอมือถือ
+  const compact = letters.length >= 6;
+  const slotSize = compact ? "size-12 sm:size-16" : "size-14 sm:size-16";
+  const slotText = compact ? "text-2xl sm:text-4xl" : "text-3xl sm:text-4xl";
+
   // สร้างถาดใหม่เมื่อเปลี่ยนคำ — สุ่มหลัง hydrate เสมอ (setTimeout กัน hydration mismatch
   // และกัน setState ตรง ๆ ใน effect body)
   useEffect(() => {
@@ -149,7 +154,7 @@ export function SpellingRound({
 
       {/* ช่องเติมตัวอักษร */}
       <div
-        className={`flex flex-wrap justify-center gap-2 ${
+        className={`flex flex-nowrap justify-center gap-2 overflow-x-auto ${
           phase === "wrong" ? "animate-shake" : ""
         }`}
       >
@@ -160,7 +165,7 @@ export function SpellingRound({
               <span
                 key={i}
                 aria-label={`ตัวอักษร ${letters[i]} (ให้มาแล้ว)`}
-                className={`flex size-14 items-center justify-center rounded-2xl border-4 border-border/60 bg-muted-surface font-heading text-3xl font-bold text-muted sm:size-16 sm:text-4xl ${
+                className={`flex ${slotSize} items-center justify-center rounded-2xl border-4 border-border/60 bg-muted-surface font-heading ${slotText} font-bold text-muted ${
                   phase === "correct" ? "animate-pop" : ""
                 }`}
                 style={
@@ -180,7 +185,7 @@ export function SpellingRound({
               type="button"
               onClick={() => tapSlot(i)}
               aria-label={letter ? `เอา ${letter} ออก` : `ช่องที่ ${i + 1}`}
-              className={`flex size-14 items-center justify-center rounded-2xl border-4 font-heading text-3xl font-bold transition-all sm:size-16 sm:text-4xl ${
+              className={`flex ${slotSize} items-center justify-center rounded-2xl border-4 font-heading ${slotText} font-bold transition-all ${
                 letter
                   ? `border-border bg-card ${TILE_COLORS[i % TILE_COLORS.length]} ${
                       phase === "correct" ? "animate-pop" : ""
