@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import type { Product } from "@/src/domain/ports/product.port";
 import { buildPromptPayPayload } from "@/src/domain/services/promptpay";
@@ -20,9 +20,19 @@ const VERIFY_STEPS = [
   "ยืนยันการซื้อ",
 ];
 
+// จำ "ตั้งใจจะยืนยันสินค้าไหน" ไว้ก่อนเด้ง Google — กลับมาแล้ว resume ให้อัตโนมัติไม่ต้องกดซ้ำ
+const PENDING_KEY = "easy-abc-pending-purchase";
+const PENDING_MAX_AGE_MS = 15 * 60 * 1000;
+
+interface PendingPurchase {
+  productId: string;
+  ts: number;
+}
+
 /**
- * ร้านค้า: login → เลือกสินค้า → QR PromptPay → กดยืนยัน → แอนิเมชันตรวจสอบ ~6.5 วิ → ปลดล็อกทันที
- * (auto-approve; admin เพิกถอนภายหลังได้ถ้าแจ้งเท็จ)
+ * ร้านค้า: เลือกสินค้า → QR PromptPay → กดยืนยันว่าจ่ายแล้ว (ปุ่มเดียวเสมอ ไม่ต้อง login ก่อน)
+ * ยังไม่ login → เด้ง Google ระหว่างยืนยัน แล้วกลับมาทำต่อให้อัตโนมัติ (login แค่ผูกบัญชี ไม่ใช่เงื่อนไขก่อนจ่าย)
+ * จ่ายแล้ว = auto-approve ปลดล็อกทันที; admin เพิกถอนภายหลังได้ถ้าแจ้งเท็จ
  */
 export function PurchasePanel() {
   const mounted = useMounted();
@@ -48,14 +58,7 @@ export function PurchasePanel() {
       });
   }, []);
 
-  const confirmPaid = async (p: Product) => {
-    if (!session) {
-      // ยังไม่ login → พาไป Google แล้วกลับมาที่ร้านค้า
-      setBusy(true);
-      await signIn.social({ provider: "google", callbackURL: "/shop" });
-      return;
-    }
-    // เข้าโหมด "กำลังตรวจสอบ" — ยิง recordPurchase จริง + หน่วงเวลาหลอกพร้อมกัน
+  const confirmPaid = useCallback(async (p: Product) => {
     setError(null);
     setSelected(null);
     setVerifying(p);
@@ -73,6 +76,37 @@ export function PurchasePanel() {
     upsertOrder(res.value);
     setSubmitted(p);
     sound.win();
+  }, [upsertOrder]);
+
+  // กลับมาจาก Google (หรือมี session อยู่แล้วตอนเปิดหน้า) → สานต่อการซื้อที่ตั้งใจไว้ก่อนเด้ง login
+  useEffect(() => {
+    if (!session || products.length === 0) return;
+    const raw = sessionStorage.getItem(PENDING_KEY);
+    if (!raw) return;
+    sessionStorage.removeItem(PENDING_KEY); // ลบทันทีกันยิงซ้ำ
+    try {
+      const pending: PendingPurchase = JSON.parse(raw);
+      if (Date.now() - pending.ts > PENDING_MAX_AGE_MS) return; // เก่าเกินไป ไม่สานต่อ
+      const product = products.find((p) => p.id === pending.productId);
+      // setTimeout กัน setState ตรง ๆ ใน effect body (react-hooks v6)
+      if (product) setTimeout(() => confirmPaid(product), 0);
+    } catch {
+      // parse พลาด → ทิ้งเงียบๆ
+    }
+  }, [session, products, confirmPaid]);
+
+  const handleConfirmPaid = async (p: Product) => {
+    if (!session) {
+      // ยังไม่ login → จำไว้ก่อนเด้ง Google แล้วกลับมาสานต่อเองอัตโนมัติ (ไม่ต้องกดยืนยันซ้ำ)
+      sessionStorage.setItem(
+        PENDING_KEY,
+        JSON.stringify({ productId: p.id, ts: Date.now() } satisfies PendingPurchase)
+      );
+      setBusy(true);
+      await signIn.social({ provider: "google", callbackURL: "/shop" });
+      return;
+    }
+    await confirmPaid(p);
   };
 
   const bundle = products.find((p) => p.kind === "bundle");
@@ -126,24 +160,19 @@ export function PurchasePanel() {
               />
             </div>
             <p className="mt-3 text-sm text-muted">
-              {session
-                ? "สแกนด้วยแอปธนาคาร โอนแล้วกดปุ่มยืนยันด้านล่าง"
-                : "เข้าสู่ระบบก่อนเพื่อผูกการซื้อกับบัญชีของคุณ"}
+              สแกนด้วยแอปธนาคาร โอนแล้วกดปุ่มยืนยันด้านล่าง
+              {!session && " (ถ้ายังไม่เข้าสู่ระบบ จะพาไปเข้าสู่ระบบด้วย Google ก่อนเพื่อผูกกับบัญชี)"}
             </p>
             {error && (
               <p className="mt-2 text-sm font-bold text-error">{error}</p>
             )}
             <div className="mt-4 flex flex-col gap-3">
               <ChunkyButton
-                onClick={() => confirmPaid(selected)}
+                onClick={() => handleConfirmPaid(selected)}
                 variant="primary"
                 disabled={busy}
               >
-                {busy
-                  ? "กำลังส่ง…"
-                  : session
-                    ? "✅ ชำระเงินแล้ว — ยืนยัน"
-                    : "เข้าสู่ระบบด้วย Google เพื่อยืนยัน"}
+                {busy ? "กำลังส่ง…" : "✅ ชำระเงินแล้ว — ยืนยัน"}
               </ChunkyButton>
               <ChunkyButton
                 onClick={() => {
