@@ -42,7 +42,6 @@ export default async function EventPlayPage({
       level={lc}
       maxLevel={levels.length}
       game={g}
-      wordsOverride={event.words}
       nextRouteOverride={id}
       backHref={`/event/${id}/${game}`}
       noSave
