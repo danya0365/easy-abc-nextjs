@@ -4,10 +4,10 @@
 export type AdventureGame = "spell" | "fill-front" | "fill-back" | "fill-middle";
 
 export const ADVENTURE_GAMES: AdventureGame[] = [
-  "spell",
   "fill-front",
   "fill-back",
   "fill-middle",
+  "spell",
 ];
 
 export const FILL_GAMES: AdventureGame[] = [
