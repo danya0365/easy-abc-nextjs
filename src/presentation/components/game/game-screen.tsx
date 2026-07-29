@@ -32,6 +32,7 @@ export function GameScreen({
   nextRouteOverride,
   noSave,
   backHref,
+  trackKey,
 }: {
   level: LevelConfig;
   maxLevel: number;
@@ -46,6 +47,8 @@ export function GameScreen({
   noSave?: boolean;
   /** custom back href สำหรับ PauseMenu + LevelComplete (สำหรับ Event) */
   backHref?: string;
+  /** progress track key (ไม่ส่ง = ใช้ game ปกติ) */
+  trackKey?: string;
 }) {
   const router = useRouter();
   const [wordIndex, setWordIndex] = useState(0);
@@ -66,7 +69,8 @@ export function GameScreen({
   const unlimited = useEntitlementStore((s) => s.hasUnlimitedEnergy());
 
   const adventure = getAdventure(game);
-  const gameStars = starsByGame[game];
+  const progressKey = trackKey ?? game;
+  const gameStars = starsByGame[progressKey];
 
   // ชุดคำตามหมวดที่เลือก (GameScreen อยู่ใต้ PlayGate ที่ guard mounted แล้ว — อ่าน store ได้ตรง ๆ)
   // wordsOverride ข้ามทุก logic (ใช้สำหรับ Event)
@@ -91,7 +95,7 @@ export function GameScreen({
       return;
     }
     const hadThreeBefore = (gameStars[level.level] ?? 0) === 3;
-    saveStars(game, level.level, stars);
+    saveStars(progressKey, level.level, stars);
     // โบนัส 3 ดาวครั้งแรกของด่าน (ต่อเกม) +1⚡
     const bonusEnergy = stars === 3 && !hadThreeBefore && !unlimited;
     if (bonusEnergy) {

@@ -25,17 +25,18 @@ export function mergeProgress(
   local: StarsByGame,
   server: StarsByGame
 ): StarsByGame {
+  const allKeys = new Set([...Object.keys(local), ...Object.keys(server)]);
   const out = {} as StarsByGame;
-  for (const game of ADVENTURE_GAMES) {
-    const l = local[game] ?? {};
-    const s = server[game] ?? {};
+  for (const key of allKeys) {
+    const l = local[key] ?? {};
+    const s = server[key] ?? {};
     const merged: StarsByLevel = { ...l };
     for (const [lv, stars] of Object.entries(s)) {
       const level = Number(lv);
       const best = Math.max(merged[level] ?? 0, stars) as Stars;
       merged[level] = best;
     }
-    out[game] = merged;
+    out[key] = merged;
   }
   return out;
 }

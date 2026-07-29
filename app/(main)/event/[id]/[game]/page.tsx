@@ -45,6 +45,7 @@ export default async function EventLevelMapPage({
         levels={levels}
         game={game as AdventureGame}
         baseRoute={`/event/${id}/${game}`}
+        trackKey={`event-${id}`}
       />
       <div className="mt-4 flex justify-center">
         <ChunkyButton href={`/event/${id}`} variant="white" size="sm">

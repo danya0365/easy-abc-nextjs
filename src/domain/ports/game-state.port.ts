@@ -1,10 +1,9 @@
 // framework-free — repo cloud save ความคืบหน้า (ดาว) ต่อ user
 import type { Result } from "../shared/result";
 import type { StarsByLevel } from "../services/rules";
-import type { AdventureGame } from "../services/mask";
 
-/** ดาวต่อด่าน แยกต่อเกมผจญภัย */
-export type StarsByGame = Record<AdventureGame, StarsByLevel>;
+/** ดาวต่อด่าน แยก key ต่อเกม (key = gameId สำหรับ adventure, "event-{eventId}" สำหรับ event) */
+export type StarsByGame = Record<string, StarsByLevel>;
 
 export interface GameStateRepository {
   /** null = ยังไม่เคยบันทึก (ผู้ใช้ใหม่) */
