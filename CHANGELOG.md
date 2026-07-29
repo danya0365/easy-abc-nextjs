@@ -5,13 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.0] - 2026-07-29
 
 ### Added
 
-### Changed
+- **ระบบ Event + ภารกิจ Spelling Bee ALP JR2 2026**: โหมดกิจกรรมพิเศษ (Spelling Bee) สำหรับงาน ALP JR2 — แต่ละกิจกรรมมีด่านของตัวเอง, track progress แยกจากโหมดผจญภัยปกติ, save ดาวแยก track, level word 5 คำต่อด่าน
 
 ### Fixed
+
+- แยก event progress ออกจาก adventure progress — ใช้ `trackKey` ป้องกัน progress ทับกัน
+- กัน `progressKey` undefined — ใช้ `?? {}` fallback
+- คำนวน trackKey ให้รวม game mode ป้องกัน progress จากโอดอื่นมาเขียนทับ
+- อนุญาตให้ save ดาวสำหรับ event levels ได้ (ไม่ถูกปิดกั้น)
 
 ## [1.2.3] - 2026-07-05
 
