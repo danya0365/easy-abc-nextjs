@@ -42,7 +42,7 @@ export default async function EventPlayPage({
       level={lc}
       maxLevel={levels.length}
       game={g}
-      trackKey={`event-${id}`}
+      trackKey={`event-${id}-${game}`}
       nextRouteOverride={id}
       backHref={`/event/${id}/${game}`}
     />
