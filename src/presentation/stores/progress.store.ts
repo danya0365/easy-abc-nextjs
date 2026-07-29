@@ -2,23 +2,22 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Stars, StarsByLevel } from "@/src/domain/services/rules";
-import type { AdventureGame } from "@/src/domain/services/mask";
 import type { StarsByGame } from "@/src/domain/ports/game-state.port";
 import { mergeProgress } from "@/src/domain/services/sync";
+import { ADVENTURE_GAMES } from "@/src/domain/services/mask";
 
 export type { StarsByGame };
 
-const emptyStars = (): StarsByGame => ({
-  spell: {},
-  "fill-front": {},
-  "fill-back": {},
-  "fill-middle": {},
-});
+const emptyStars = (): StarsByGame => {
+  const s: StarsByGame = {};
+  for (const g of ADVENTURE_GAMES) s[g] = {};
+  return s;
+};
 
 interface ProgressState {
   starsByGame: StarsByGame;
   /** บันทึกแบบ best-of (ไม่ลดดาวที่เคยได้) — คืน true ถ้าเป็นสถิติใหม่ */
-  saveStars: (game: AdventureGame, level: number, earned: Stars) => boolean;
+  saveStars: (game: string, level: number, earned: Stars) => boolean;
   /** merge ดาวจาก server (best-of) — ตอน login/กู้คืน */
   mergeFromServer: (server: StarsByGame | null) => void;
   resetProgress: () => void;

@@ -21,9 +21,15 @@ import { EnergyEmptyModal } from "./energy-hud";
 export function LevelMap({
   levels,
   game = "spell",
+  baseRoute,
+  trackKey,
 }: {
   levels: LevelConfig[];
   game?: AdventureGame;
+  /** custom route prefix แทน adventure.playRoute (ใช้สำหรับ Event) เช่น "/event/spelling-bee-alp-jr2-2026/spell" */
+  baseRoute?: string;
+  /** progress track key (ไม่ส่ง = ใช้ game ปกติ) */
+  trackKey?: string;
 }) {
   const router = useRouter();
   const mounted = useMounted();
@@ -33,7 +39,8 @@ export function LevelMap({
   const [emptyOpen, setEmptyOpen] = useState(false);
 
   const adventure = getAdventure(game);
-  const stars = starsByGame[game];
+  const progressKey = trackKey ?? game;
+  const stars = starsByGame[progressKey] ?? {};
   const ALIGN = ["self-start", "self-center", "self-end", "self-center"];
 
   const handlePlay = (level: number) => {
@@ -48,7 +55,10 @@ export function LevelMap({
       setEmptyOpen(true);
       return;
     }
-    router.push(adventure.playRoute(level));
+    const target = baseRoute
+      ? `${baseRoute}/${level}`
+      : adventure.playRoute(level);
+    router.push(target);
   };
 
   return (
