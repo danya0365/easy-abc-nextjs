@@ -28,12 +28,24 @@ export function GameScreen({
   maxLevel,
   game = "spell",
   wordsByCategory,
+  wordsOverride,
+  nextRouteOverride,
+  noSave,
+  backHref,
 }: {
   level: LevelConfig;
   maxLevel: number;
   game?: AdventureGame;
   /** คำของด่านนี้แยกต่อหมวด (สไลซ์แล้ว) — ไม่ส่ง/หมวด "คละ" = ใช้ชุดคำดั้งเดิมใน level.words */
   wordsByCategory?: Record<string, WordEntry[]>;
+  /** ใช้ชุดคำนี้แทน category/level.words (สำหรับ Event) */
+  wordsOverride?: WordEntry[];
+  /** custom route base สำหรับปุ่ม "ด่านถัดไป" (สำหรับ Event) */
+  nextRouteOverride?: string;
+  /** ไม่บันทึกดาว/ไม่ให้โบนัส energy (สำหรับ Event) */
+  noSave?: boolean;
+  /** custom back href สำหรับ PauseMenu + LevelComplete (สำหรับ Event) */
+  backHref?: string;
 }) {
   const router = useRouter();
   const [wordIndex, setWordIndex] = useState(0);
@@ -57,10 +69,11 @@ export function GameScreen({
   const gameStars = starsByGame[game];
 
   // ชุดคำตามหมวดที่เลือก (GameScreen อยู่ใต้ PlayGate ที่ guard mounted แล้ว — อ่าน store ได้ตรง ๆ)
+  // wordsOverride ข้ามทุก logic (ใช้สำหรับ Event)
   const category = useCategoryStore((s) => s.category);
   const categoryWords =
     category && category !== "mixed" ? wordsByCategory?.[category] : undefined;
-  const words = categoryWords?.length ? categoryWords : level.words;
+  const words = wordsOverride ?? (categoryWords?.length ? categoryWords : level.words);
 
   const entry = words[wordIndex];
   const total = words.length;
@@ -72,6 +85,11 @@ export function GameScreen({
     }
     // จบด่าน
     const stars = computeStars(mistakes);
+    // Event (noSave) = ข้ามบันทึกดาวและโบนัส energy
+    if (noSave) {
+      setResult({ stars, bonusEnergy: false });
+      return;
+    }
     const hadThreeBefore = (gameStars[level.level] ?? 0) === 3;
     saveStars(game, level.level, stars);
     // โบนัส 3 ดาวครั้งแรกของด่าน (ต่อเกม) +1⚡
@@ -98,6 +116,11 @@ export function GameScreen({
 
   const handleNext = () => {
     const next = level.level + 1;
+    // Event — ใช้ custom route ถ้ามี
+    if (nextRouteOverride) {
+      router.push(`/event/${nextRouteOverride}/${game}/${next}`);
+      return;
+    }
     const cost = energyCostToStart({
       kind: "adventure",
       level: next,
@@ -153,7 +176,7 @@ export function GameScreen({
         open={paused && !result}
         onResume={() => setPaused(false)}
         onRestart={restart}
-        backHref={adventure.mapRoute}
+        backHref={backHref ?? adventure.mapRoute}
       />
 
       {result && (
@@ -162,7 +185,7 @@ export function GameScreen({
           stars={result.stars}
           maxLevel={maxLevel}
           bonusEnergy={result.bonusEnergy}
-          mapHref={adventure.mapRoute}
+          mapHref={backHref ?? adventure.mapRoute}
           onReplay={handleReplay}
           onNext={handleNext}
         />

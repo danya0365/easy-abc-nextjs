@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const TABS = [
   { href: "/", label: "หน้าแรก", emoji: "🏠", also: [] as string[] },
   { href: "/modes", label: "เล่น", emoji: "🎮", also: ["/levels"] },
+  { href: "/event", label: "กิจกรรม", emoji: "🎪", also: [] as string[] },
   { href: "/shop", label: "ร้านค้า", emoji: "🛒", also: [] },
   { href: "/settings", label: "ตั้งค่า", emoji: "⚙️", also: ["/how-to-play"] },
 ];
