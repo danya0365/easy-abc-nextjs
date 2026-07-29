@@ -70,7 +70,7 @@ export function GameScreen({
 
   const adventure = getAdventure(game);
   const progressKey = trackKey ?? game;
-  const gameStars = starsByGame[progressKey];
+  const gameStars = starsByGame[progressKey] ?? {};
 
   // ชุดคำตามหมวดที่เลือก (GameScreen อยู่ใต้ PlayGate ที่ guard mounted แล้ว — อ่าน store ได้ตรง ๆ)
   // wordsOverride ข้ามทุก logic (ใช้สำหรับ Event)

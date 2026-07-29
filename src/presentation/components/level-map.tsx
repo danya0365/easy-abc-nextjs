@@ -40,7 +40,7 @@ export function LevelMap({
 
   const adventure = getAdventure(game);
   const progressKey = trackKey ?? game;
-  const stars = starsByGame[progressKey];
+  const stars = starsByGame[progressKey] ?? {};
   const ALIGN = ["self-start", "self-center", "self-end", "self-center"];
 
   const handlePlay = (level: number) => {
