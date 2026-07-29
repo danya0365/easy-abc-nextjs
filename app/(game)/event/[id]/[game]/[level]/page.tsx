@@ -44,7 +44,6 @@ export default async function EventPlayPage({
       game={g}
       nextRouteOverride={id}
       backHref={`/event/${id}/${game}`}
-      noSave
     />
   );
 }
