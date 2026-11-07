@@ -1,4 +1,5 @@
-// Auto-migrate ตอน deploy — รันโดย `vercel-build` script บน Vercel (env TURSO_* ตั้งในโปรเจกต์)
+// Auto-migrate ตอน deploy — รันโดย `vercel-build` บน Vercel หรือ `npm run db:migrate:deploy` ก่อน cf:deploy
+// Worker ไม่รันสคริปต์นี้ (ไม่มี filesystem สำหรับโฟลเดอร์ drizzle)
 // ใช้ programmatic migrator ของ drizzle อ่านไฟล์ SQL ใน ./drizzle (ที่ commit ไว้) แล้ว apply เฉพาะที่ยังไม่ลง
 // ข้ามถ้าไม่มี TURSO_DATABASE_URL (build local ที่ไม่ได้ตั้ง env — ป้องกันไปแตะ prod โดยไม่ตั้งใจ)
 import { migrate } from "drizzle-orm/libsql/migrator";

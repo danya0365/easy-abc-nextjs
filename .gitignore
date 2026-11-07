@@ -42,6 +42,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# cloudflare / opennext
+.open-next
+.wrangler
+.dev.vars
+
 # claude — ค่าเฉพาะเครื่อง (settings.json หลัก commit เข้า repo)
 .claude/settings.local.json
 

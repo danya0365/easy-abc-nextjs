@@ -1,5 +1,7 @@
 // better-auth — Google social login + admin plugin (role/ban) — server-only
-// อ่าน BETTER_AUTH_SECRET / BETTER_AUTH_URL จาก env อัตโนมัติ (ตั้งใน .env.local / Vercel)
+// อ่าน BETTER_AUTH_SECRET / BETTER_AUTH_URL จาก env อัตโนมัติ
+// production + staging ปัก BETTER_AUTH_URL=https://easy-abc.easy-ai.online ใน wrangler.jsonc
+// callback Google ยังเป็น /api/auth/callback/google — ห้ามเปลี่ยน path นี้
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin } from "better-auth/plugins";

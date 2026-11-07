@@ -36,6 +36,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    ".open-next/**",
+    ".wrangler/**",
     // Skill reference files — ไม่ใช่โค้ดของแอป
     ".agents/**",
   ]),

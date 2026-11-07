@@ -1,0 +1,84 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "easy-abc",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "upload_source_maps": true,
+  // custom domain ตั้งแล้ว workers.dev ของ production จะไม่ถูกเปิด (default)
+  "workers_dev": false,
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 0.01
+    }
+  },
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // โดเมนเดิม — Google OAuth callback ยังเป็น
+  // https://easy-abc.easy-ai.online/api/auth/callback/google
+  "routes": [
+    {
+      "pattern": "easy-abc.easy-ai.online",
+      "custom_domain": true
+    }
+  ],
+  // URL สาธารณะ ไม่ใช่ secret — ปักไว้เพื่อไม่ให้ Better Auth infer เป็น workers.dev
+  "vars": {
+    "BETTER_AUTH_URL": "https://easy-abc.easy-ai.online",
+    "APP_URL": "https://easy-abc.easy-ai.online"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "easy-abc"
+    }
+  ],
+  // ชื่ออย่างเดียว — ค่าจริงตั้งด้วย `wrangler secret put` (และ --env staging)
+  "secrets": {
+    "required": [
+      "BETTER_AUTH_SECRET",
+      "GOOGLE_CLIENT_ID",
+      "GOOGLE_CLIENT_SECRET",
+      "TURSO_DATABASE_URL",
+      "TURSO_AUTH_TOKEN",
+      "LINE_CHANNEL_ACCESS_TOKEN"
+    ]
+  },
+  "env": {
+    "staging": {
+      "name": "easy-abc-dev",
+      "workers_dev": true,
+      // routes ว่าง = ไม่สืบทอด custom domain ของ production
+      // (wrangler จะย้าย easy-abc.easy-ai.online ไป worker นี้ถ้าไม่กันไว้)
+      "routes": [],
+      "vars": {
+        "BETTER_AUTH_URL": "https://easy-abc.easy-ai.online",
+        "APP_URL": "https://easy-abc.easy-ai.online"
+      },
+      "services": [
+        {
+          "binding": "WORKER_SELF_REFERENCE",
+          "service": "easy-abc-dev"
+        }
+      ],
+      "secrets": {
+        "required": [
+          "BETTER_AUTH_SECRET",
+          "GOOGLE_CLIENT_ID",
+          "GOOGLE_CLIENT_SECRET",
+          "TURSO_DATABASE_URL",
+          "TURSO_AUTH_TOKEN",
+          "LINE_CHANNEL_ACCESS_TOKEN"
+        ]
+      }
+    }
+  }
+}
