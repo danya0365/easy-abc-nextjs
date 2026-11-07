@@ -22,6 +22,9 @@ const mali = Mali({
 
 // Base URL ใช้แปลง opengraph-image/twitter-image (file-based) เป็น absolute URL
 // (crawler อย่าง Facebook/LINE ต้องการ URL เต็ม) — ตั้ง APP_URL บน production ได้
+const ogImageAlt =
+  "Easy ABC — เกมสะกดคำสำหรับเด็ก เรียนรู้ผ่านการเล่น สนุก ปลดด่าน เก็บดาว! เล่นฟรีผ่านเว็บเบราว์เซอร์ ไม่ต้องดาวน์โหลด ที่ easy-abc.easy-ai.online";
+
 const siteUrl = process.env.APP_URL ?? "https://easy-abc.easy-ai.online";
 
 const title = "Easy ABC — เกมสะกดคำสำหรับเด็ก";
@@ -56,8 +59,8 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/favicon/apple-touch-icon.png", sizes: "180x180" }],
   },
-  // og:image / twitter:image มาจาก app/opengraph-image.png และ
-  // app/twitter-image.png อัตโนมัติ (file-based metadata)
+  // og:image / twitter:image อยู่ใน public/ (static asset) — ไม่ฝังลง Worker bundle
+  // (file-based metadata ใน app/ ถูก inline เป็น base64 ทำให้ Worker เกิน 3 MiB)
   openGraph: {
     type: "website",
     siteName: "Easy ABC",
@@ -65,11 +68,13 @@ export const metadata: Metadata = {
     url: siteUrl,
     title,
     description,
+    images: [{ url: "/opengraph-image.png", width: 1536, height: 1024, type: "image/png", alt: ogImageAlt }],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
+    images: [{ url: "/twitter-image.png", width: 1536, height: 1024, alt: ogImageAlt }],
   },
   // ยืนยันความเป็นเจ้าของโดเมนกับ Google Search Console (สำหรับ OAuth brand verification)
   // ตั้งค่า GOOGLE_SITE_VERIFICATION = code ที่ Search Console ให้ (เว้นว่าง = ไม่ render)
